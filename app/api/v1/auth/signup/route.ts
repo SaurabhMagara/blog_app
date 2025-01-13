@@ -16,7 +16,7 @@ export async function POST(req : NextRequest, res : NextResponse){
         const existingUser = await User.findOne({email : email});
 
         if(existingUser){
-            return NextResponse.json({message : "Account with this email exists."},{status : 401});
+            return NextResponse.json({message : "Email already in use!"},{status : 401});
         }
 
         const genSalt = await bcrypt.genSalt(10);
