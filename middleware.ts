@@ -1,12 +1,10 @@
-import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
  
 export async function middleware(request: NextRequest) {
 
     try {
-        const cookie = await cookies()
-        const token = cookie.get("token");
+        const token = request.cookies.get("token")?.value;
         console.log(token);
 
         if(!token){
