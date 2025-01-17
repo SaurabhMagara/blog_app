@@ -29,17 +29,19 @@ export async function POST (req : NextRequest, res : NextResponse){
     try {
         await connectionToDatabase();
 
-        const {email, password} = await req.json();
+        const {email, username, password} = await req.json();
 
-        if(!email){
-            return NextResponse.json({ message : "email is required to login."},{status : 401});
+        if(!email && !username){
+            return NextResponse.json({ message : "email or username is required to login."},{status : 401});
         }
 
         if(!password){
             return NextResponse.json({ message : "password is required to login."},{status : 401});        
         }
 
-        const user = await User.findOne({email : email});
+        const user = await User.findOne({
+            $or : [{email}, {username}]
+        });
 
         if(!user){
             return NextResponse.json({message : "Invalid Credantials"}, {status : 401});

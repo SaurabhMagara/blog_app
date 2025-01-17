@@ -30,9 +30,20 @@ export async function POST(req : NextRequest){
         }
 
         const blog = new Blog({title, content, postedBy});
+        await blog.save();
 
-        // reaming code here 
+        //if there is no blogs on user then create empty array
+        if(!user.blogs){
+            user.blogs = [];
+        }
+
+        user.blogs.push(blog._id as Schema.Types.ObjectId);
+        await user.save();
+
+        return NextResponse.json({message : "blog created", data : blog},{status : 200});
+
+
     } catch (error : any) {
-        
+        return NextResponse.json({error : error.message || "Something went wrong"}, {status : 500});
     }
 }

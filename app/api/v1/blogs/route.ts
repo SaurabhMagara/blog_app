@@ -16,6 +16,6 @@ export async function GET() {
 
     } catch (error: any) {
         console.log(error);
-        return NextResponse.json({ error: error.message || "Somwthing went wrong" }, { status: 500 });
+        return NextResponse.json({ error: error.message || "Something went wrong" }, { status: 500 });
     }
 }

@@ -7,13 +7,15 @@ export async function POST(req : NextRequest, res : NextResponse){
     try {
         await connectionToDatabase();
 
-        const {email, password, name} = await req.json();
+        const {email, password, username} = await req.json();
         
-        if(!email || !password || !name){
+        if(!email || !password || !username){
             return NextResponse.json({message : "All fields are required."}, {status : 401});
         }
 
-        const existingUser = await User.findOne({email : email});
+        const existingUser = await User.findOne({
+            $or :[{email}, {username}]
+        });
 
         if(existingUser){
             return NextResponse.json({message : "Email already in use!"},{status : 401});
@@ -23,7 +25,7 @@ export async function POST(req : NextRequest, res : NextResponse){
         const hashedPassword = await bcrypt.hash(password, genSalt);
 
         const user = new User({
-            name,
+            username,
             email,
             password : hashedPassword,
         });
@@ -32,8 +34,8 @@ export async function POST(req : NextRequest, res : NextResponse){
 
         return NextResponse.json({message : "Registered Successfully"});
 
-    } catch (error) {
+    } catch (error :any) {
         console.log(error);
-        return NextResponse.json({message : "Somwthing went wrong."}, {status : 500});
+        return NextResponse.json({error : error.message ||"Something went wrong."}, {status : 500});
     }
 }
