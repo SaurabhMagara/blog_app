@@ -1,27 +1,36 @@
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
- 
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+
 export async function middleware(request: NextRequest) {
-
     try {
+        // Extract the token from cookies
         const token = request.cookies.get("token")?.value;
-        console.log(token);
 
-        if(!token){
-            return NextResponse.json({message : "user unauthenticated"}, {status : 400});
+        console.log("Token from cookies:", token); // Debugging
+
+        // If no token is found, respond with 401 Unauthorized
+        if (!token) {
+            return NextResponse.json(
+                { message: "User unauthenticated" },
+                { status: 401 }
+            );
         }
 
-        const response = NextResponse.json({message : "user is authenticated"},{status : 200});
-
-        return response;
-
-    } catch (error :any) {
-        console.log(error);
-        return NextResponse.json({error : error.message}, {status : 500})
+        // If the token exists, allow the request to proceed
+        return NextResponse.next();
+    } catch (error: any) {
+        console.error("Middleware error:", error.message);
+        return NextResponse.json(
+            { error: "Internal server error" },
+            { status: 500 }
+        );
     }
 }
- 
-// See "Matching Paths" below to learn more
+
+// Apply the middleware to specific routes
 export const config = {
-  matcher: '/api/v1/auth/logout',
-}
+    matcher: [
+        "/api/v1/logout",
+        "/api/v1/users/:userid",
+    ],
+};

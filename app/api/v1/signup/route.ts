@@ -1,7 +1,11 @@
+"use server"
+
 import connectionToDatabase from "@/lib/db";
 import { User } from "@/models/user.model";
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcrypt";
+
+// rehister user route or signup route
 
 export async function POST(req : NextRequest, res : NextResponse){
     try {
@@ -18,7 +22,7 @@ export async function POST(req : NextRequest, res : NextResponse){
         });
 
         if(existingUser){
-            return NextResponse.json({message : "Email already in use!"},{status : 401});
+            return NextResponse.json({message : "Email or username already in use!"},{status : 401});
         }
 
         const genSalt = await bcrypt.genSalt(10);
@@ -30,9 +34,9 @@ export async function POST(req : NextRequest, res : NextResponse){
             password : hashedPassword,
         });
 
-        await user.save();
+        const newUser = await user.save();
 
-        return NextResponse.json({message : "Registered Successfully"});
+        return NextResponse.json({message : "Registered Successfully", data :newUser },{status : 201});
 
     } catch (error :any) {
         console.log(error);
