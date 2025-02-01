@@ -13,6 +13,10 @@ const blogSchema : Schema = new Schema(
             ref : "User",
             required : true
         },
+        photo :{
+            type : String, // cloudinary url
+            required : true,
+        },
         title :{
             type : String,
             required : true,
