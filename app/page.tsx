@@ -2,6 +2,7 @@
 
 import React from "react";
 import { motion, Variants } from "framer-motion";
+import { useRouter } from "next/navigation";
 
 // Define animation variants
 const containerVariants: Variants = {
@@ -42,7 +43,7 @@ interface FloatingBubbleProps {
 const FloatingBubble: React.FC<FloatingBubbleProps> = ({ position, size, animationDuration, delay }) => (
   <div className="absolute" style={{ ...position, width: size, height: size }}>
     <motion.div
-      className="rounded-full bg-white/10 w-full h-full"
+      className="rounded-full bg-violet-900 w-full h-full"
       animate={{ y: [0, 20, 0], opacity: [0.3, 0.6, 0.3] }}
       transition={{ duration: animationDuration, delay, repeat: Infinity, ease: "easeInOut" }}
     />
@@ -50,10 +51,12 @@ const FloatingBubble: React.FC<FloatingBubbleProps> = ({ position, size, animati
 );
 
 const BlogEntrance: React.FC = () => {
-  const handleEnterClick = () => console.log("Enter button clicked");
+
+  const router = useRouter();
+  const handleEnterClick = () => router.push("/auth/login");
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-violet-400 via-violet-300 to-violet-200 p-6 relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-violet-400 via-violet-500 to-violet-200 p-6 relative overflow-hidden">
       <motion.div variants={containerVariants} initial="initial" animate="animate" className="text-center max-w-3xl relative z-10">
 
         {/* Title */}
