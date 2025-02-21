@@ -9,6 +9,7 @@ if (!uri) {
 async function connectionToDatabase(){
 
     try {
+        if (mongoose.connection.readyState === 1) return;
         mongoose.connect(uri!);
         const connection = mongoose.connection;
 
