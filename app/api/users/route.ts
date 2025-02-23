@@ -10,8 +10,7 @@ export async function POST(req : NextRequest){
     try {
         await connectionToDatabase();
 
-        const users = await User.find({}).populate("blogs").select(["-password"]);
-
+        const users = await User.find({}).select(["-password"])
         if(!users){
             return NextResponse.json({message : "There are no users.", data : []},{status : 200});
         }

@@ -10,10 +10,10 @@ import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 
 
-const generateToken = (userId: mongoose.Types.ObjectId): string => {
+const generateToken = (userId: mongoose.Types.ObjectId, email :string, username: string): string => {
     try {
         const token = jwt.sign(
-            { _id: userId }, // Payload
+            { _id: userId, email, username }, // Payload
             process.env.JWT_SECRET!, // Secret
             { expiresIn: "7d" } // Options
         );
@@ -65,11 +65,15 @@ export async function POST(req: NextRequest) {
         }
 
         // Generate a JWT token
-        const token = generateToken(user._id);
+        const token = generateToken(user._id, user.username, user.email);
+
+        const data = {
+            id: user._id, username: user.username, email: user.email
+        }
 
         // Create the response and set the cookie
         const response = NextResponse.json(
-            { message: "Login successful." },
+            { message: "Login successful.", data },
             { status: 200 }
         );
 

@@ -10,7 +10,7 @@ export async function GET() {
     try {
         await connectionToDatabase();
 
-        const blogs = await Blog.find()?.populate("postedBy");
+        const blogs = await Blog.find()?.populate("postedBy", "username");
 
         if (!blogs || blogs.length <= 0 ) {
             return NextResponse.json({ message: "No blogs yet." , data : []}, { status: 200 });

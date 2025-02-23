@@ -1,25 +1,16 @@
 "use server"
 
 import connectionToDatabase from "@/lib/db";
+import cloudinary from "@/lib/cloudinary";
 import { Blog } from "@/models/blog.model";
 import { User } from "@/models/user.model";
 import { isValidObjectId, Schema } from "mongoose";
-import multer from "multer";
-import { v2 as cloudinary } from "cloudinary";
 import { NextRequest, NextResponse } from "next/server";
 import { Readable } from "stream";
 
-// create blog route
+// ------------- create blog route----------------
 
-interface BlogRequestBody {
-    title: string;
-    content: string;
-}
-
-// multer for handling photo
-const upload = multer({ storage: multer.memoryStorage() });
-
-export async function POST(req: NextRequest, {params} : {params : {userid : string}}) {
+export async function POST(req: NextRequest, { params }: { params: { userid: string } }) {
     try {
 
         await connectionToDatabase();
@@ -31,16 +22,15 @@ export async function POST(req: NextRequest, {params} : {params : {userid : stri
         const content = formData.get("content") as string;
         const file = formData.get("image") as File;
 
-        const {userid} = params;
+        const userid = params.userid;
+        console.log(userid);
 
-        upload.single("image")
-
-        if(!userid){
-            return NextResponse.json({message : "userid is reuired."}, {status : 400});
+        if (!userid) {
+            return NextResponse.json({ message: "userid is reuired." }, { status: 400 });
         }
 
-        if(!isValidObjectId(userid)){
-            return NextResponse.json({message : "Invalid userid"}, {status : 400});
+        if (!isValidObjectId(userid)) {
+            return NextResponse.json({ message: "Invalid userid" }, { status: 400 });
         }
 
         if (!title || !content || !file) {
@@ -69,19 +59,19 @@ export async function POST(req: NextRequest, {params} : {params : {userid : stri
             stream.pipe(cloudinaryUpload);
         });
 
-        if(!uploadPromise){
-            return NextResponse.json({message : "uplaod failed "}, {status : 500});
+        if (!uploadPromise) {
+            return NextResponse.json({ message: "uplaod failed " }, { status: 500 });
         }
 
         // getting image url from cludinary
         const imageUrl = await uploadPromise;
 
-        if(!imageUrl){
-            return NextResponse.json({message : "Can not get image url from cloudinary."},{status : 500});
+        if (!imageUrl) {
+            return NextResponse.json({ message: "Can not get image url from cloudinary." }, { status: 500 });
         }
 
         // creating new blog
-        const blog = new Blog({ title, content, image : imageUrl , postedBy : userid });
+        const blog = new Blog({ title, content, image: imageUrl, postedBy: userid });
         await blog.save();
 
         //if there is no blogs on user then create empty array

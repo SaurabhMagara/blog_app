@@ -1,12 +1,15 @@
 'use client';
-import { FormEvent, useState } from 'react';
+
+import { FormEvent, useEffect, useState } from 'react';
 import { EyeNoneIcon, EyeOpenIcon } from '@radix-ui/react-icons';
 import axios from 'axios';
 import toast, { Toaster } from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
+import { useUserContext } from "@/context/userContext";
 
 const LoginPage = () => {
+  const { user, setUser } = useUserContext();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
@@ -14,7 +17,6 @@ const LoginPage = () => {
 
     const router = useRouter();
 
-    const validateEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
@@ -25,11 +27,7 @@ const LoginPage = () => {
             setLoading(false);
             return;
         }
-        if (!validateEmail(email)) {
-            toast.error('Please enter a valid email address.');
-            setLoading(false);
-            return;
-        }
+       
         if (password.length < 4) {
             toast.error('Password must be at least 4 characters long.');
             setLoading(false);
@@ -37,11 +35,19 @@ const LoginPage = () => {
         }
 
         try {
-            const response = await axios.post('/api/v1/', { email, password }, {
+            const response = await axios.post('/api/', { email, password, username : email }, {
                 withCredentials: true,
                 headers: { "Content-Type": "application/json" }
             });
 
+            const user = {
+              id: response?.data?.data?.id,
+              username: response?.data?.data?.username,
+              email : response?.data?.data?.email
+            };
+
+            setUser(user);
+            
             if (response.statusText === "OK") {
                 toast.success('Login successful!');
                 router.push('/blogs');
@@ -51,7 +57,7 @@ const LoginPage = () => {
         } catch (err: any) {
             setEmail("");
             setPassword("");
-            toast.error(err?.response?.data?.message || 'An error occurviolet.');
+            toast.error(err?.response?.data?.message || 'An error occured.');
         } finally {
             setLoading(false);
         }
@@ -75,6 +81,13 @@ const LoginPage = () => {
       </div>
     );
 
+    useEffect(()=>{
+        if(user){
+            router.push("/blogs");
+            return;
+        }
+    },[]);
+
     return (
         <div className="flex flex-col items-center min-h-screen justify-center bg-gradient-to-br from-violet-400 via-violet-500 to-violet-200"
         >
@@ -90,7 +103,7 @@ const LoginPage = () => {
                     <div>
                         <label htmlFor="email" className="block text-sm font-medium text-violet-800">Email Address</label>
                         <input
-                            type="email"
+                            type="text"
                             id="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}

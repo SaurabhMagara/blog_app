@@ -46,7 +46,8 @@ export async function middleware(request: NextRequest) {
 // Apply the middleware to specific routes
 export const config = {
     matcher: [
-        "/api/v1/logout",
-        "/api/v1/users/:userid*",
+        "/api/logout",
+        "/api/users/:userid*",
+        "/api/blogs",
     ],
 };

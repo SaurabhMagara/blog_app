@@ -6,20 +6,26 @@ if (!uri) {
     throw new Error("env error : db uri is missing");
 }
 
+let isConnected = false; // Track connection status
+
 async function connectionToDatabase(){
 
     try {
-        if (mongoose.connection.readyState === 1) return;
-        mongoose.connect(uri!);
+        if (isConnected) {
+            console.log("⚡ Using existing MongoDB connection");
+            return;
+        }
+       const db = await mongoose.connect(uri!);
         const connection = mongoose.connection;
 
         connection.on('connected', () => {
             console.log('MongoDB connected successfully');
+            isConnected = !!db.connections[0].readyState;
         })
 
         connection.on('error', (err) => {
             console.log('MongoDB connection error. Please make sure MongoDB is running. ' + err);
-            process.exit();
+            process.exit(1);
         })
 
     } catch (error) {
