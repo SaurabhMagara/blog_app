@@ -5,6 +5,7 @@ import { Comment } from "@/models/comment.model";
 import mongoose, { isValidObjectId } from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
+// ----------------- post comment ---------------------
 
 export async function POST(req : NextRequest, {params} : {params : {blogid : string}}){
     try {
