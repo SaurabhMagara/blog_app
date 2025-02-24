@@ -56,10 +56,10 @@ export async function POST(req : NextRequest, {params} : {params : {blogid: stri
         }
 
         // checking is its already liked
-        // const existingLike = await Like.findOne({ userid, blogid });
-        // if (existingLike) {
-        //     return NextResponse.json({ message: "You have already liked this blog." }, { status: 400 });
-        // }
+        const existingLike = await Like.findOne({ userid, blogid });
+        if (existingLike) {
+            return NextResponse.json({ message: "You have already liked this blog." }, { status: 400 });
+        }
 
         // saving like if user and blog with given id is found
         const like = new Like({

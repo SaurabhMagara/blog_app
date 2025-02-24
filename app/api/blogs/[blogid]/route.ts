@@ -25,7 +25,7 @@ export async function GET(req: NextRequest, { params }: { params: { blogid: stri
         }
 
         // checking if blog with given id
-        const existingBlog = await Blog.findById({ blogid });
+        const existingBlog = await Blog.findById(blogid);
 
         // if blog with given id dosent exists gives error
         if (!existingBlog) {
