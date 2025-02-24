@@ -1,19 +1,14 @@
-import mongoose, { Schema } from "mongoose";
-import { blog } from "./blog.model";
-import { unique } from "next/dist/build/utils";
+import mongoose, { Schema, Types, Model } from "mongoose";
 
 // user document type,  because of typescript
-export interface user extends Document {
-    username : string;
-    email : string;
-    password : string;
-    blogs : Schema.Types.ObjectId []
-    createdAt : Date;
-    updatedAt : Date
+export interface IUser extends Document {
+    username: string;
+    email: string;
+    password: string;
+    blogs: Types.ObjectId[];
+    createdAt: Date;
+    updatedAt: Date;
 }
-
-
-
 //defining Schema of user
 const userSchema : Schema = new Schema(
     {
@@ -47,4 +42,4 @@ const userSchema : Schema = new Schema(
 )
 
 // if there is not user modle then it creates new otherswise use existing one
-export const User : mongoose.Model<user> = mongoose.models.User || mongoose.model<user>("User", userSchema)
+export const User: Model<IUser> = mongoose.models.User || mongoose.model<IUser>("User", userSchema);

@@ -1,6 +1,6 @@
 "use server";
 
-// Login route
+// ------------Login route-----------------------
 
 import connectionToDatabase from "@/lib/db";
 import { User } from "@/models/user.model";
@@ -85,7 +85,7 @@ export async function POST(req: NextRequest) {
 
         return response;
     } catch (error: any) {
-        console.error("Login error:", error.message);
+        console.error("Login error:", error?.message);
         return NextResponse.json(
             { message: "Something went wrong." },
             { status: 500 }

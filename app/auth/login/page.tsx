@@ -82,7 +82,8 @@ const LoginPage = () => {
     );
 
     useEffect(()=>{
-        if(user){
+        if(user != null){
+            console.log(user);
             router.push("/blogs");
             return;
         }

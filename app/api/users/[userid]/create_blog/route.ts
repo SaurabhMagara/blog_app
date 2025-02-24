@@ -4,7 +4,7 @@ import connectionToDatabase from "@/lib/db";
 import cloudinary from "@/lib/cloudinary";
 import { Blog } from "@/models/blog.model";
 import { User } from "@/models/user.model";
-import { isValidObjectId, Schema } from "mongoose";
+import mongoose, { isValidObjectId, Schema, Types, Document, Model } from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 import { Readable } from "stream";
 
@@ -80,12 +80,12 @@ export async function POST(req: NextRequest, { params }: { params: { userid: str
         }
 
         // pushing blog id in user array for upadting users blogs
-        user.blogs.push(blog._id as Schema.Types.ObjectId);
+        user.blogs.push(blog._id as mongoose.Types.ObjectId);
         await user.save();
 
         return NextResponse.json({ message: "blog created", data: blog }, { status: 201 });
 
     } catch (error: any) {
-        return NextResponse.json({ error: error.message || "Something went wrong while creating blog." }, { status: 500 });
+        return NextResponse.json({ message: error.message || "Something went wrong while creating blog.", error }, { status: 500 });
     }
 }
