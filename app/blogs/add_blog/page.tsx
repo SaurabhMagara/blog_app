@@ -163,10 +163,9 @@ const add_blog: React.FC = () => {
     fileData.append("content", formData?.content);
 
     try {
-      console.log(user?.id);
       // Simulate API call
       const response = await axios.post(
-        `/api/users/${user?.id}/create_blog`,
+        `/api/users/${user?._id}/create_blog`,
         fileData,
         {
           headers: {
@@ -179,7 +178,7 @@ const add_blog: React.FC = () => {
       setContent("");
       setImagePreview(null);
       toast.success("Blog created Successfully.");
-      router.push("/blogs")
+      router.push("/blogs");
     } catch (error: any) {
       console.error("Error submitting blog post:", error);
       toast.error(error?.response?.data?.message);
@@ -195,10 +194,12 @@ const add_blog: React.FC = () => {
   };
 
   return (
-    <div className="h-full w-full bg-gray-50">
-      <div className="flex flex-col gap-3 w-full h-full bg-white rounded-lg overflow-hidden px-4 py-3 md:px-5">
+    <div className="h-full w-full bg-gradient-to-b from-violet-200 to-indigo-100">
+      <div className="flex flex-col gap-3 w-full h-full rounded-lg overflow-hidden px-4 py-3 md:px-5">
         <div className="flex justify-between w-full border-b-2 border-violet-700 py-4">
-          <h1 className="text-3xl font-bold text-gray-900">Create Blog Post</h1>
+          <h1 className="text-3xl font-bold text-violet-800">
+            Create Blog Post
+          </h1>
           <button
             type="submit"
             onClick={(e: FormEvent) => {
@@ -206,7 +207,7 @@ const add_blog: React.FC = () => {
               handleSubmit(e);
             }}
             disabled={isSubmitting}
-            className={`px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 hidden md:block ${
+            className={`px-4 py-2 rounded-xl bg-violet-800 text-slate-100 hover:bg-violet-900 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 hidden md:block ${
               isSubmitting ? "opacity-75 cursor-not-allowed" : ""
             }`}
           >
@@ -220,14 +221,14 @@ const add_blog: React.FC = () => {
         >
           <div className="w-full flex justify-center">
             <div className=" w-11/12 h-[91%] ">
-              <label className="block text-sm font-medium text-gray-700 pb-2">
+              <label className="block text-sm font-medium text-violet-700 pb-2">
                 Featured Image
               </label>
               <div
                 className={`h-[91%] border-2 border-dashed rounded-lg p-6 transition-colors ${
                   isDragging
-                    ? "border-blue-500 bg-blue-50"
-                    : "border-gray-300 hover:border-blue-400"
+                    ? "border-violet-500 bg-blue-50"
+                    : "border-gray-300 hover:border-violet-400"
                 }`}
                 onDragEnter={handleDragEnter}
                 onDragLeave={handleDragLeave}
@@ -269,7 +270,7 @@ const add_blog: React.FC = () => {
                     className="text-center cursor-pointer flex justify-center items-center h-full"
                     onClick={() => fileInputRef.current?.click()}
                   >
-                    <div className="text-gray-600">
+                    <div className="text-violet-600">
                       <p>Drag and drop an image here, or click to select</p>
                       <p className="text-sm mt-2">
                         Supports: JPG, PNG, GIF (Max 5MB)
@@ -282,7 +283,7 @@ const add_blog: React.FC = () => {
           </div>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 pb-2">
+              <label className="block text-sm font-medium text-violet-700 pb-2">
                 Title
               </label>
               <input
@@ -290,14 +291,14 @@ const add_blog: React.FC = () => {
                 name="title"
                 value={formData.title}
                 onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-violet-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent bg-inherit text-violet-600"
                 required
                 placeholder="Enter your blog title"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 pb-2">
+              <label className="block text-sm font-medium text-violet-700 pb-2">
                 Content
               </label>
               <JoditEditor
@@ -305,6 +306,7 @@ const add_blog: React.FC = () => {
                 value={content}
                 config={config}
                 tabIndex={1}
+                className=""
                 onBlur={(newContent) => setContent(newContent)}
                 onChange={(newContent) => {
                   setFormData((prev) => ({

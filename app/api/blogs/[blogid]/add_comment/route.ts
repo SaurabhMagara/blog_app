@@ -59,7 +59,7 @@ export async function POST(req : NextRequest, {params} : {params : {blogid : str
 
         await comment.save();
 
-        await Blog.findByIdAndUpdate({_id : blogid},{$inc : {comments : 1}})
+        await Blog.findByIdAndUpdate({_id : blogid},{$inc : {comments : 1}},{new :true});
 
         return NextResponse.json({message : "Comment added successfully.", data  :comment}, {status :200});
 

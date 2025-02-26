@@ -5,7 +5,7 @@ import { createContext, useContext, useState, ReactNode, useEffect } from "react
 
 // Define user state type
 interface User {
-  id: string;
+  _id: string;
   username: string;
   email: string;
 }

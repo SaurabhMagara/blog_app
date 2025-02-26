@@ -3,6 +3,10 @@ import mongoose, { Schema, Types, Model } from "mongoose";
 // user document type,  because of typescript
 export interface IUser extends Document {
     username: string;
+    profile_pic : {
+        url : string,
+        public_id : string
+    }
     email: string;
     password: string;
     blogs: Types.ObjectId[];
@@ -28,6 +32,14 @@ const userSchema : Schema = new Schema(
             type : String,
             required : true,
             trim :true
+        },
+        profile_pic : {
+            url :{
+                type : String
+            },
+            public_id : {
+                type :String
+            }
         },
         blogs:[
             {

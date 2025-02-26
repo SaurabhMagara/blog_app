@@ -5,7 +5,10 @@ export interface IBlog extends Document {
     postedBy: Types.ObjectId;
     title: string;
     content: string;
-    image: string;
+    image: {
+        public_id: string;  // Cloudinary image ID (needed for deletion)
+        url: string;         // Cloudinary URL (for display)
+    };
     likes: Types.ObjectId[];
     comments: Types.ObjectId[];
     createdAt: Date;
@@ -21,8 +24,12 @@ const BlogSchema: Schema = new Schema(
             required: true,
         },
         image: {
-            type: String, // Cloudinary URL
-            required: true,
+            public_id: {
+                type: String, required: true // Store Cloudinary image ID
+            }, 
+            url: {
+                type: String, required: true // Store Cloudinary image URL
+            },       
         },
         title: {
             type: String,
@@ -39,7 +46,7 @@ const BlogSchema: Schema = new Schema(
         },
         comments: {
             type: Number,
-            required : true,
+            required: true,
             default: 0,
         },
     },

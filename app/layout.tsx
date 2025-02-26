@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { UserContextProvider } from "@/context/userContext";
+import { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
   title: "Blog App",
@@ -16,6 +17,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`antialiased`}>
+        <Toaster position="bottom-right"/>
         <UserContextProvider>{children}</UserContextProvider>
       </body>
     </html>

@@ -1,3 +1,4 @@
+import connectionToDatabase from "@/lib/db";
 import { Blog } from "@/models/blog.model";
 import { Comment } from "@/models/comment.model";
 import { User } from "@/models/user.model";
@@ -6,8 +7,11 @@ import { NextRequest, NextResponse } from "next/server";
 
 // -------------- get comments ------------------------
 
-export async function POST (req : NextRequest, {params} : {params : { blogid : string}}){
+export async function GET (req : NextRequest, {params} : {params : { blogid : string}}){
     try {
+
+        await connectionToDatabase();
+
         const blogid = params.blogid;
 
         if(!blogid){

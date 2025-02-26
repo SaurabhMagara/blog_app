@@ -84,7 +84,7 @@ const LoginPage = () => {
     useEffect(()=>{
         if(user != null){
             console.log(user);
-            router.push("/blogs");
+            // router.push("/blogs");
             return;
         }
     },[]);

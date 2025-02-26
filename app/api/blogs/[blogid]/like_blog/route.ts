@@ -75,7 +75,7 @@ export async function POST(req : NextRequest, {params} : {params : {blogid: stri
             return NextResponse.json({ message: "Something went wrong while creating like." }, { status: 500 });
         }
         
-        await Blog.findByIdAndUpdate({_id : blogid}, {$inc : {likes : 1}})
+        await Blog.findByIdAndUpdate({_id : blogid}, {$inc : {likes : 1}},{new : true});
 
         //returning response
         return NextResponse.json({message : "Blog liked", data : like},{status : 200});
