@@ -7,12 +7,12 @@ import { NextRequest, NextResponse } from "next/server";
 
 // -------------- get comments ------------------------
 
-export async function GET(req: Request, { params }: { params: { blogid: string } }) {
+export async function GET(req: NextRequest, context: { params: { blogid: string } }) {
     try {
 
         await connectionToDatabase();
 
-        const blogid = params.blogid;
+        const {blogid} = context.params;
 
         if (!blogid) {
             return NextResponse.json({ message: "blogid is required." }, { status: 400 });

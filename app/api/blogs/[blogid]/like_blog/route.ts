@@ -7,14 +7,14 @@ import { NextRequest, NextResponse } from "next/server";
 
 // ------------- like blog route---------------
 
-export async function POST(req: Request, {params} : {params : {blogid: string}}){
+export async function POST(req: NextRequest, context: { params: { blogid: string } }){
     try {
 
         // connecting to db
         await connectionToDatabase();
 
         // getting blogid from params
-        const blogid = params.blogid;
+        const {blogid} = context.params;
 
         // getting userid from body
         const {userid} = await req.json() ;

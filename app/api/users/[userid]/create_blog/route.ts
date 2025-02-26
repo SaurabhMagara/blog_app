@@ -10,7 +10,7 @@ import { Readable } from "stream";
 
 // ------------- create blog route----------------
 
-export async function POST(req: Request, { params }: { params: { userid: string } }) {
+export async function POST(req: Request, context: { params: { userid: string } }) {
     try {
 
         await connectionToDatabase();
@@ -22,8 +22,7 @@ export async function POST(req: Request, { params }: { params: { userid: string 
         const content = formData.get("content") as string;
         const file = formData.get("image") as File;
 
-        const userid = params.userid;
-        console.log(userid);
+        const {userid} = context.params;
 
         if (!userid) {
             return NextResponse.json({ message: "userid is reuired." }, { status: 400 });

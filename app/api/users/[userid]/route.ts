@@ -3,15 +3,15 @@
 import connectionToDatabase from "@/lib/db";
 import { User } from "@/models/user.model";
 import { isValidObjectId } from "mongoose";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 // get use by use id route
 
-export async function GET(req: Request, {params} : {params : {userid : string}}){
+export async function GET(req: NextRequest, context: { params: { userid: string } }){
     try {
 
         await connectionToDatabase();
-        const {userid} = params;
+        const {userid} = context.params;
 
         if(!userid){
             return NextResponse.json({message : "userid is required"});

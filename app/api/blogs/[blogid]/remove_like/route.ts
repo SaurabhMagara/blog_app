@@ -6,11 +6,11 @@ import { isValidObjectId } from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
 
-export async function POST(req: Request, { params }: { params: { blogid: string } }) {
+export async function POST(req: NextRequest, context: { params: { blogid: string } }) {
     try {
         await connectionToDatabase();
 
-        const blogid = params.blogid;
+        const {blogid} = context.params;
         const { userid } = await req.json();
 
         if (!blogid) {

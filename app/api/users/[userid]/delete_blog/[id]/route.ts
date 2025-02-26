@@ -11,12 +11,12 @@ import cloudinary from "@/lib/cloudinary";
 
 
 // delete blog route
-export async function DELETE(req: Request, { params }: { params: { userid: string; id: string } }) {
+export async function DELETE(req: NextRequest, context: { params: { userid: string; id: string } }) {
     try {
         await connectionToDatabase();
 
         // Extract userId and blogId from params
-        const { userid, id } = params;
+        const { userid, id } = context.params;
 
         // Validate required fields
         if (!id) return NextResponse.json({ message: "Blog ID is required." }, { status: 400 });

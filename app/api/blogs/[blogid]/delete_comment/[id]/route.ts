@@ -6,12 +6,12 @@ import { isValidObjectId } from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
 
-export async function DELETE(req: Request, { params }: { params: { id:string } }) {
+export async function DELETE(req: NextRequest, context: { params: { id: string } }) {
     try {
 
         await connectionToDatabase();
 
-        const id = params.id;
+        const {id} = context.params;
 
         if(!id || !isValidObjectId(id)){
             return NextResponse.json({message : "Invalid comment id."},{status :400});

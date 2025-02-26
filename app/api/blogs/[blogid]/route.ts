@@ -5,14 +5,14 @@ import { NextRequest, NextResponse } from "next/server";
 
 // --------------- get blog by id route ------------------------
 
-export async function GET(req: Request, { params }: { params: { blogid: string } }) {
+export async function GET(req: NextRequest, context: { params: { blogid: string } }) {
     try {
 
         // connecting to db
         await connectionToDatabase();
 
         // getting blog id from params
-        const blogid = params.blogid;
+        const {blogid} = context.params;
 
         // checking blogid is given
         if (!blogid) {
