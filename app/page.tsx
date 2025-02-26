@@ -53,7 +53,7 @@ const FloatingBubble: React.FC<FloatingBubbleProps> = ({ position, size, animati
 const BlogEntrance: React.FC = () => {
 
   const router = useRouter();
-  const handleEnterClick = () => router.push("/auth/login");
+  const handleEnterClick = () => router.push("/login");
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-violet-400 via-violet-500 to-violet-200 p-6 relative overflow-hidden">

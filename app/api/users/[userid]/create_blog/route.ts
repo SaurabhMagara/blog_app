@@ -48,30 +48,34 @@ export async function POST(req: NextRequest, { params }: { params: { userid: str
         const stream = Readable.from(buffer);
 
         // uploading image in cloudinary
-        const uploadPromise = new Promise<string>((resolve, reject) => {
+        // uploading profile pic in cloudinary
+        const uploadPromise = new Promise<{ url: string; public_id: string }>((resolve, reject) => {
             const cloudinaryUpload = cloudinary.uploader.upload_stream(
                 { folder: "nextjs_uploads" },
                 (error, result) => {
                     if (error || !result) return reject(error);
-                    resolve(result.secure_url);
+                    resolve({ url: result.secure_url, public_id: result.public_id }); // Get both URL & public_id
                 }
             );
             stream.pipe(cloudinaryUpload);
         });
 
-        if (!uploadPromise) {
-            return NextResponse.json({ message: "uplaod failed " }, { status: 500 });
-        }
+        const uploadedImage = await uploadPromise;
 
-        // getting image url from cludinary
-        const imageUrl = await uploadPromise;
-
-        if (!imageUrl) {
-            return NextResponse.json({ message: "Can not get image url from cloudinary." }, { status: 500 });
+        if (!uploadedImage) {
+            return NextResponse.json({ message: "Upload failed" }, { status: 500 });
         }
 
         // creating new blog
-        const blog = new Blog({ title, content, image: imageUrl, postedBy: userid });
+        const blog = new Blog({
+            title,
+            content,
+            image: {
+                url: uploadedImage.url,
+                public_id: uploadedImage.public_id
+            },
+            postedBy: userid
+        });
         await blog.save();
 
         //if there is no blogs on user then create empty array

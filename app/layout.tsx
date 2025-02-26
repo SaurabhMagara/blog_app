@@ -17,7 +17,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`antialiased`}>
-        <Toaster position="bottom-right"/>
+        <Toaster position="top-center"/>
         <UserContextProvider>{children}</UserContextProvider>
       </body>
     </html>

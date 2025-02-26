@@ -23,7 +23,7 @@ const add_blog: React.FC = () => {
   const { user } = useUserContext();
   const router = useRouter();
 
-  // console.log(user);
+  console.log(user);
   const [formData, setFormData] = useState<BlogPost>({
     title: "",
     content: "",

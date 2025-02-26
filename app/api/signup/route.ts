@@ -34,44 +34,41 @@ export async function POST(req: NextRequest, res: NextResponse) {
             return NextResponse.json({ message: "Email or username already in use!" }, { status: 401 });
         }
 
+        const genSalt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, genSalt);
+
         // getting file 
         const buffer = Buffer.from(await file.arrayBuffer());
         const stream = Readable.from(buffer);
 
         // uploading profile pic in cloudinary
-        const uploadPromise = new Promise<string>((resolve, reject) => {
+        const uploadPromise = new Promise<{ url: string; public_id: string }>((resolve, reject) => {
             const cloudinaryUpload = cloudinary.uploader.upload_stream(
                 { folder: "nextjs_uploads" },
                 (error, result) => {
                     if (error || !result) return reject(error);
-                    resolve(result.secure_url);
+                    resolve({ url: result.secure_url, public_id: result.public_id }); // Get both URL & public_id
                 }
             );
             stream.pipe(cloudinaryUpload);
         });
 
-        if (!uploadPromise) {
-            return NextResponse.json({ message: "uplaod failed " }, { status: 500 });
+        const uploadedImage = await uploadPromise;
+
+        if (!uploadedImage) {
+            return NextResponse.json({ message: "Upload failed" }, { status: 500 });
         }
 
-        // getting image url from cludinary
-        const imageUrl = await uploadPromise;
-
-        if (!imageUrl) {
-            return NextResponse.json({ message: "Can not get image url from cloudinary." }, { status: 500 });
-        }
-
-        const genSalt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, genSalt);
-
+        // Now save the user with the correct profile_pic structure
         const user = new User({
             username,
             email,
             password: hashedPassword,
-            profile_pic: imageUrl
+            profile_pic: {
+                url: uploadedImage.url,
+                public_id: uploadedImage.public_id
+            }
         });
-
-        console.log(imageUrl);
 
         const newUser = await user.save();
 

@@ -7,11 +7,14 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
-interface Blog {
+export interface Blog {
   _id: string;
   title: string;
   content: string;
-  image:  string; 
+  image: {
+    public_id  : string,
+    url : string
+  } 
   comments: number;
   likes: number;
   createAt: string;
@@ -22,10 +25,13 @@ const Blogs = () => {
   const [loading, setLoading] = useState(true);
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const { user } = useUserContext();
+  console.log(user);
 
   useEffect(() => {
+    console.log(user)
+
     if (!user) {
-      router.push("/auth/login");
+      router.push("/login");
       return;
     }
 
@@ -78,7 +84,7 @@ const Blogs = () => {
                   <div className="bg-gradient-to-l from-violet-50 to-violet-200 rounded-lg overflow-hidden shadow-violet-200 shadow-lg cursor-pointer group h-full">
                     <div className="w-full h-48 overflow-hidden ">
                       <img
-                        src={blog?.image}
+                        src={blog?.image.url}
                         alt={blog.title}
                         className="w-full h-full object-cover group-hover:scale-110 transition-all duration-300"
                       />

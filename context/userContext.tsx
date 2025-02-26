@@ -28,7 +28,11 @@ export const UserContextProvider = ({ children }: { children: ReactNode }) => {
         const response = await axios.get("/api/auth", {
           withCredentials: true,
         });
-        setUser(response?.data?.data);
+        setUser((prev )=>({...prev,
+          _id : response.data.data._id,
+          email : response.data.data.email,
+          username : response.data.data.username
+        }));
       } catch (error) {
         console.error("Error fetching user:", error);
       }

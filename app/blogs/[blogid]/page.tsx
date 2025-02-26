@@ -8,16 +8,7 @@ import axios from "axios";
 import { useUserContext } from "@/context/userContext";
 import toast from "react-hot-toast";
 import CommentModal from "@/components/CommentModal";
-
-// defining blog type
-export interface Blog {
-  title: string;
-  content: string;
-  image: string;
-  updatedAt: string;
-  comments: number;
-  likes: number;
-}
+import { Blog } from "../page";
 
 // defining like type
 interface Like {
@@ -52,6 +43,7 @@ export default function BlogPage() {
   // getting user from context
   const { user } = useUserContext();
 
+  console.log(user);
   // getting blogid from params
   const { blogid } = useParams();
   const [blog, setBlog] = useState<Blog>(); // for setting details
@@ -174,7 +166,7 @@ export default function BlogPage() {
 
         <div className="relative w-full mb-8">
           <img
-            src={blog?.image || ""}
+            src={blog?.image.url || ""}
             alt={blog?.title || "image"}
             className="object-cover rounded-lg"
           />
