@@ -10,7 +10,7 @@ import cloudinary from "@/lib/cloudinary";
 
 // rehister user route or signup route
 
-export default async function POST(req: NextRequest, res: NextResponse) {
+export async function POST(req: NextRequest, res: NextResponse) {
     try {
         await connectionToDatabase();
 

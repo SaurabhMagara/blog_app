@@ -10,7 +10,7 @@ import { Readable } from "stream";
 
 // ------------- create blog route----------------
 
-export default async function POST(req: NextRequest, { params }: { params: { userid: string } }) {
+export async function POST(req: NextRequest, { params }: { params: { userid: string } }) {
     try {
 
         await connectionToDatabase();

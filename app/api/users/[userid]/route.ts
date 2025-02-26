@@ -7,7 +7,7 @@ import { NextResponse } from "next/server";
 
 // get use by use id route
 
-export default async function GET(req : NextResponse, {params} : {params : {userid : string}}){
+export async function GET(req : NextResponse, {params} : {params : {userid : string}}){
     try {
 
         await connectionToDatabase();

@@ -7,7 +7,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 // ----------------- post comment ---------------------
 
-export default async function POST(req : NextRequest, {params} : {params : {blogid : string}}){
+export async function POST(req : NextRequest, {params} : {params : {blogid : string}}){
     try {
         // conneting to db
         await connectionToDatabase();

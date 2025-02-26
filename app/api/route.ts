@@ -24,7 +24,7 @@ const generateToken = (userId: mongoose.Types.ObjectId, email :string, username:
     }
 };
 
-export default async function POST(req: NextRequest) {
+export async function POST(req: NextRequest) {
     try {
         await connectionToDatabase();
 

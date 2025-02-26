@@ -6,7 +6,7 @@ import { isValidObjectId } from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
 
-export default async function POST(req: NextRequest, { params }: { params: { blogid: string } }) {
+export async function POST(req: NextRequest, { params }: { params: { blogid: string } }) {
     try {
         await connectionToDatabase();
 

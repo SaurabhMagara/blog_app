@@ -11,7 +11,7 @@ import cloudinary from "@/lib/cloudinary";
 
 
 // delete blog route
-export default async function DELETE(req: NextRequest, { params }: { params: { userid: string; id: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: { userid: string; id: string } }) {
     try {
         await connectionToDatabase();
 
