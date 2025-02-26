@@ -13,6 +13,7 @@ interface User {
 interface UserState {
   user: User | null;
   setUser: (user: User | null) => void;
+  loading : boolean
 }
 
 // Create Context with undefined default to enforce provider usage
@@ -20,29 +21,32 @@ const UserContext = createContext<UserState | undefined>(undefined);
 
 // ✅ Provider Component
 export const UserContextProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
-  // Load user from cookies when the app starts
-  useEffect(() => {
-    const getUserData = async () => {
-      try {
-        const response = await axios.get("/api/auth", {
-          withCredentials: true,
-        });
-        setUser((prev )=>({...prev,
-          _id : response.data.data._id,
-          email : response.data.data.email,
-          username : response.data.data.username
-        }));
-      } catch (error) {
-        console.error("Error fetching user:", error);
-      }
-    };
+   const [user, setUser] = useState<User | null>(null);
+   const [loading, setLoading] = useState(true); // ✅ Start with `true`
 
-    getUserData();
-  }, []);
+   useEffect(() => {
+     const getUserData = async () => {
+       try {
+         const response = await axios.get("/api/auth", {
+           withCredentials: true,
+         });
+         setUser({
+           _id: response.data.data._id,
+           email: response.data.data.email,
+           username: response.data.data.username,
+         });
+       } catch (error) {
+         console.error("Error fetching user:", error);
+       } finally {
+         setLoading(false); // ✅ Stop loading once request finishes
+       }
+     };
+
+     getUserData();
+   }, []);
 
   return (
-    <UserContext.Provider value={{ user, setUser }}>
+    <UserContext.Provider value={{ user, setUser, loading }}>
       {children}
     </UserContext.Provider>
   );

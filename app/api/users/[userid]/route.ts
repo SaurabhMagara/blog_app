@@ -21,7 +21,7 @@ export async function GET(req : NextResponse, {params} : {params : {userid : str
             return NextResponse.json({message : "Invalid userid"}, {status : 400});
         }
 
-        const user = await User.findOne({_id : userid})?.populate("blogs");
+        const user = await User.findById(userid)?.select(["-password"])?.populate("blogs");
 
         if(!user){
             return NextResponse.json({message : "user not found"}, {status : 400});

@@ -1,15 +1,15 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { X } from "lucide-react";
+import { DeleteIcon, Trash2, X } from "lucide-react";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { useUserContext } from "@/context/userContext";
 
 interface Comment {
   _id: string;
-  blogId: string;
-  userId: {username : string}
+  blogId: {_id : string, postedBy : string};
+  userId: {username : string, _id :string}
   content: string;
   createdAt: string;
 }
@@ -82,7 +82,7 @@ const CommentModal: React.FC<CommentModalProps> = ({
     try {
       const response = await axios.get(`/api/blogs/${blogId}/get_comments`);
 
-      console.log(response);
+      // console.log(response);
       setComments(response.data.data)
     } catch (error: any) {
       console.error("Error fetching comments:", error);
@@ -92,6 +92,7 @@ const CommentModal: React.FC<CommentModalProps> = ({
       setLoading(false);
     }
   };
+
 
   // Submit a new comment
   const handleSubmitComment = async (e: React.FormEvent) => {
@@ -107,7 +108,7 @@ const CommentModal: React.FC<CommentModalProps> = ({
         content : newComment
       });
 
-      console.log(response);
+      // console.log(response);
       await fetchComments();
       setNewComment("");
       setIsPostingComment(false);
@@ -131,13 +132,24 @@ const CommentModal: React.FC<CommentModalProps> = ({
     });
   };
 
+  const handleDeleteComment= async(id : string)=>{
+    try {
+      const response = await axios.delete(`/api/blogs/${blogId}/delete_comment/${id}`);
+      // console.log(response);
+      await fetchComments()
+    } catch (error : any) {
+      console.log(error);
+      toast.error(error?.response?.data?.message || "Something went wrong.")
+    }
+  }
+
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 w-full">
       <div
         ref={modalRef}
-        className="bg-gradient-to-b from-violet-200 to-indigo-100 rounded-lg shadow-xl w-full max-w-lg h-[90vh] flex flex-col"
+        className="bg-gradient-to-b from-violet-200 to-indigo-100 rounded-lg shadow-xl w-full h-[90vh] flex flex-col"
       >
         <div className="flex justify-between items-center p-4 border-b border-violet-600">
           <h3 className="text-xl font-semibold text-violet-800">Comments</h3>
@@ -168,9 +180,17 @@ const CommentModal: React.FC<CommentModalProps> = ({
                 >
                   <div className="flex justify-between items-start mb-2">
                     <h4 className="font-medium">{comment.userId?.username}</h4>
-                    <span className="text-xs text-gray-500">
-                      {formatDate(comment.createdAt)}
-                    </span>
+                    <div className="flex gap-2 justify-center items-center">
+                      <span className="text-xs text-gray-500">
+                        {formatDate(comment.createdAt)}
+                      </span>
+                      {comment?.userId?._id === user?._id ||
+                      comment?.blogId?.postedBy === user?._id ? (
+                        <button onClick={()=>handleDeleteComment(comment._id)} className="bg-red-400 hover:bg-red-500 cursor-pointer rounded-full text-white ">
+                          <Trash2 className="p-1" />
+                        </button>
+                      ) : null}
+                    </div>
                   </div>
                   <p className="text-gray-700">{comment.content}</p>
                 </div>

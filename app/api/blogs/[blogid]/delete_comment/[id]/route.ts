@@ -6,7 +6,7 @@ import { isValidObjectId } from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
 
-export async function PUT(req: NextRequest, { params }: { params: { id:string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: { id:string } }) {
     try {
 
         await connectionToDatabase();
@@ -35,7 +35,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id:string } 
             }
         );
 
-        NextResponse.json({message : "Comment deleted successfully.", data : updatedBlog},{status : 200});
+        return NextResponse.json({message : "Comment deleted successfully.", data : updatedBlog},{status : 200});
 
     } catch (error: any) {
         console.log(error);

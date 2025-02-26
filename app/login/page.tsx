@@ -120,7 +120,7 @@ const LoginPage = () => {
               type="text"
               id="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => setEmail(e.target.value.trim())}
               className="mt-2 block w-full px-4 py-2 bg-violet-200 border border-violet-400 rounded-md text-violet-900 focus:outline-none focus:ring-2 focus:ring-violet-500 placeholder-gray-500"
               placeholder="you@example.com"
             />
@@ -137,7 +137,7 @@ const LoginPage = () => {
                 type={showPassword ? "text" : "password"}
                 id="password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => setPassword(e.target.value.trim())}
                 className="mt-2 block w-full px-4 py-2 bg-violet-200 border border-violet-400 rounded-md text-violet-900 focus:outline-none focus:ring-2 focus:ring-violet-500 placeholder-gray-500"
                 placeholder="Enter your password"
               />

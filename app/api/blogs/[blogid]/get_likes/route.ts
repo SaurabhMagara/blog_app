@@ -28,7 +28,7 @@ export async function GET(req: NextRequest, { params }: { params: { blogid: stri
             return NextResponse.json({message : "There no likes.", data : []}, {status : 200});
         }
 
-        return NextResponse.json({message : "Likes riceved successfully.", data : Likes},{status : 200});
+        return NextResponse.json({message : "Likes recieved successfully.", data : Likes},{status : 200});
 
     } catch (error : any) {
         console.log(error);
