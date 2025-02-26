@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 
 // logout route
 
-export async function POST (){
+export default async function POST (){
     try {
         await connectionToDatabase();
 

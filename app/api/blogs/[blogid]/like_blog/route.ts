@@ -7,7 +7,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 // ------------- like blog route---------------
 
-export async function POST(req : NextRequest, {params} : {params : {blogid: string}}){
+export default async function POST(req : NextRequest, {params} : {params : {blogid: string}}){
     try {
 
         // connecting to db

@@ -7,7 +7,7 @@ import { NextResponse } from "next/server";
 
 // get all blogs route
 
-export async function GET() {
+export default async function GET() {
     try {
         // connecting db
         await connectionToDatabase();

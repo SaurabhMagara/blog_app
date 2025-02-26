@@ -6,7 +6,7 @@ import { isValidObjectId } from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
 
-export async function DELETE(req: NextRequest, { params }: { params: { id:string } }) {
+export default async function DELETE(req: NextRequest, { params }: { params: { id:string } }) {
     try {
 
         await connectionToDatabase();

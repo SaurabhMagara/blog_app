@@ -6,7 +6,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 // -------------- get blogs likes--------------------
 
-export async function GET(req: NextRequest, { params }: { params: { blogid: string } }) {
+export default async function GET(req: NextRequest, { params }: { params: { blogid: string } }) {
     try {
         await connectionToDatabase();
 
