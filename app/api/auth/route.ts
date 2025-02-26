@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken"; // If using JWT
 
-export async function GET(request: NextRequest) {
+export async function GET(request: Request) {
     try {
         // Get token from cookies
         const cookieStore = await cookies();

@@ -7,7 +7,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 // -------------- get comments ------------------------
 
-export async function GET(req: NextRequest, { params }: { params: { blogid: string } }) {
+export async function GET(req: Request, { params }: { params: { blogid: string } }) {
     try {
 
         await connectionToDatabase();

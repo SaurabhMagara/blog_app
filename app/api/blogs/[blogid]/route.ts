@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 // --------------- get blog by id route ------------------------
 
-export async function GET(req: NextRequest, { params }: { params: { blogid: string } }) {
+export async function GET(req: Request, { params }: { params: { blogid: string } }) {
     try {
 
         // connecting to db

@@ -6,7 +6,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 // get users routes
 
-export async function POST(req : NextRequest){
+export async function POST(req: Request){
     try {
         await connectionToDatabase();
 
