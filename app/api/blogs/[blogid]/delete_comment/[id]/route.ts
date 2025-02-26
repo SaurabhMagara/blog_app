@@ -6,17 +6,15 @@ import { isValidObjectId } from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
 interface ContextType {
-    params : {
-        id: string
-    }
+    params: { id: string };
 }
 
-export async function DELETE(req: NextRequest, { params } : ContextType) {
+export async function DELETE(req: NextRequest, context : ContextType) {
     try {
 
         await connectionToDatabase();
 
-        const {id} = params;
+        const { id } = context.params;
 
         if(!id || !isValidObjectId(id)){
             return NextResponse.json({message : "Invalid comment id."},{status :400});

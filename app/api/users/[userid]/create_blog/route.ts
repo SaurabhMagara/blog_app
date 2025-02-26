@@ -16,7 +16,7 @@ interface ContextType {
     }
 }
 
-export async function POST(req: Request, { params } : ContextType ) {
+export async function POST(req: Request, context : ContextType ) {
     try {
 
         await connectionToDatabase();
@@ -28,7 +28,7 @@ export async function POST(req: Request, { params } : ContextType ) {
         const content = formData.get("content") as string;
         const file = formData.get("image") as File;
 
-        const {userid} = params;
+        const { userid } = context.params;
 
         if (!userid) {
             return NextResponse.json({ message: "userid is reuired." }, { status: 400 });

@@ -5,18 +5,15 @@ import { isValidObjectId } from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
 // -------------- get blogs likes--------------------
-
-interface ContextType{
-    params : {
-        blogid : string
-    }
+interface ContextType {
+    params: { blogid: string };
 }
 
-export async function GET(req: NextRequest, { params }: ContextType ) {
+export async function GET(req: NextRequest, context: ContextType ) {
     try {
         await connectionToDatabase();
 
-        const {blogid} = params;
+        const {blogid} = context.params;
 
         if(!blogid || !isValidObjectId(blogid)){
             return NextResponse.json({message : "Invalid blogid."},{status:400});

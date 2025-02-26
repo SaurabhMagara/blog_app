@@ -13,14 +13,14 @@ interface ContextType{
     }
 }
 
-export async function POST(req: NextRequest, { params }: ContextType){
+export async function POST(req: NextRequest, context: ContextType){
     try {
 
         // connecting to db
         await connectionToDatabase();
 
         // getting blogid from params
-        const {blogid} = params;
+        const {blogid} = context.params;
 
         // getting userid from body
         const {userid} = await req.json() ;

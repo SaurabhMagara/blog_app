@@ -10,14 +10,14 @@ interface ContextType{
     }
 }
 
-export async function GET(req: NextRequest, { params } : ContextType) {
+export async function GET(req: NextRequest, context : ContextType) {
     try {
 
         // connecting to db
         await connectionToDatabase();
 
         // getting blog id from params
-        const {blogid} = params;
+        const {blogid} = context.params;
 
         // checking blogid is given
         if (!blogid) {

@@ -40,11 +40,12 @@ const Blogs = () => {
       setLoadings(true);
       try {
         const response = await axios.get("/api/blogs");
-        console.log(response);
+        // console.log(response);
         setBlogs(response?.data?.data);
       } catch (error: any) {
         console.log(error);
-        toast.error(error?.message || "Can not fetch blogs.");
+        toast.error(error?.response?.data?.message || "Can not fetch blogs.");
+        router.push("/login");
       } finally {
         setLoadings(false);
       }

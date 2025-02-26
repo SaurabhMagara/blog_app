@@ -128,6 +128,10 @@ export default function BlogPage() {
 
   useEffect(() => {
     if (!blogid || !user) return;
+
+    if(!user){
+      router.push("/login");
+    }
     // getting likes
     const getLikes = async () => {
       try {

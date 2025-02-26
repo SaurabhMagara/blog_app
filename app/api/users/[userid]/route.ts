@@ -13,11 +13,11 @@ interface ContextType {
 }
 
 
-export async function GET(req: NextRequest,  { params } :ContextType){
+export async function GET(req: NextRequest,  context :ContextType){
     try {
 
         await connectionToDatabase();
-        const {userid} = params;
+        const {userid} = context.params;
 
         if(!userid){
             return NextResponse.json({message : "userid is required"});
