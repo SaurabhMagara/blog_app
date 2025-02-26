@@ -146,10 +146,10 @@ const CommentModal: React.FC<CommentModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 w-full">
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
       <div
         ref={modalRef}
-        className="bg-gradient-to-b from-violet-200 to-indigo-100 rounded-lg shadow-xl w-full h-[90vh] flex flex-col"
+        className="bg-gradient-to-b from-violet-200 to-indigo-100 rounded-lg shadow-xl w-full md:w-5/12  h-[90vh] flex flex-col"
       >
         <div className="flex justify-between items-center p-4 border-b border-violet-600">
           <h3 className="text-xl font-semibold text-violet-800">Comments</h3>

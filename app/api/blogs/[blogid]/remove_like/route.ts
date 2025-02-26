@@ -5,12 +5,17 @@ import { User } from "@/models/user.model";
 import { isValidObjectId } from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
+interface ContextType {
+    params : {
+        blogid : string
+    }
+}
 
-export async function POST(req: NextRequest, context: { params: { blogid: string } }) {
+export async function POST(req: NextRequest, {params} : ContextType) {
     try {
         await connectionToDatabase();
 
-        const {blogid} = context.params;
+        const {blogid} = params;
         const { userid } = await req.json();
 
         if (!blogid) {

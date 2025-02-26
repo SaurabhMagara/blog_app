@@ -6,12 +6,18 @@ import { isValidObjectId } from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
 // get use by use id route
+interface ContextType {
+    params: {
+        userid: string
+    }
+}
 
-export async function GET(req: NextRequest, context: { params: { userid: string } }){
+
+export async function GET(req: NextRequest,  { params } :ContextType){
     try {
 
         await connectionToDatabase();
-        const {userid} = context.params;
+        const {userid} = params;
 
         if(!userid){
             return NextResponse.json({message : "userid is required"});

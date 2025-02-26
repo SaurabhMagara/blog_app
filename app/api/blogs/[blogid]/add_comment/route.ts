@@ -7,12 +7,16 @@ import { NextRequest, NextResponse } from "next/server";
 
 // ----------------- post comment ---------------------
 
-export async function POST(req: NextRequest, context: { params: { blogid: string } }){
+interface ContextType {
+    params: { blogid: string };
+}
+
+export async function POST(req: NextRequest, { params } : ContextType){
     try {
         // conneting to db
         await connectionToDatabase();
 
-        const {blogid} = context.params;
+        const {blogid} = params;
         const { userid, content } = await req.json();
 
         if(!blogid){

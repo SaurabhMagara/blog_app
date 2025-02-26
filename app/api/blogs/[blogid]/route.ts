@@ -4,15 +4,20 @@ import { isValidObjectId } from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
 // --------------- get blog by id route ------------------------
+interface ContextType{
+    params : {
+        blogid : string
+    }
+}
 
-export async function GET(req: NextRequest, context: { params: { blogid: string } }) {
+export async function GET(req: NextRequest, { params } : ContextType) {
     try {
 
         // connecting to db
         await connectionToDatabase();
 
         // getting blog id from params
-        const {blogid} = context.params;
+        const {blogid} = params;
 
         // checking blogid is given
         if (!blogid) {

@@ -6,11 +6,17 @@ import { NextRequest, NextResponse } from "next/server";
 
 // -------------- get blogs likes--------------------
 
-export async function GET(req: NextRequest, context: { params: { blogid: string } }) {
+interface ContextType{
+    params : {
+        blogid : string
+    }
+}
+
+export async function GET(req: NextRequest, { params }: ContextType ) {
     try {
         await connectionToDatabase();
 
-        const {blogid} = context.params;
+        const {blogid} = params;
 
         if(!blogid || !isValidObjectId(blogid)){
             return NextResponse.json({message : "Invalid blogid."},{status:400});

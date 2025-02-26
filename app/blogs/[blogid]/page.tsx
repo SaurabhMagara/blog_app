@@ -192,8 +192,8 @@ export default function BlogPage() {
   return (
     <>
       <Navbar />
-      <div className="felx bg-gradient-to-b from-violet-200 to-indigo-100 flex justify-center w-full">
-        <div className=" px-4 py-8 w-full md:w-9/12 ">
+      <div className="felx bg-gradient-to-b from-violet-200 to-indigo-100 flex justify-center w-full min-h-screen h-full">
+        <div className=" px-4 py-8 w-full md:w-9/12 h-full">
           <div className="mb-6">
             <div className="border-b border-violet-500 flex gap-3 mb-4 pb-4">
               <button
@@ -227,7 +227,7 @@ export default function BlogPage() {
 
           {/* JoEditor content - rendered as HTML */}
           <div
-            className="porse mb-8 text-wrap overflow-scroll"
+            className="porse mb-8 text-wrap overflow-hidden"
             dangerouslySetInnerHTML={{ __html: blog?.content || "" }} // it renders html content
           />
 
