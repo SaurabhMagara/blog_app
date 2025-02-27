@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import {User} from '../models/user.model'; // Ensure this import happens AFTER the model is defined
 
 const uri = process.env.DB_URI! as string;
 
@@ -6,21 +7,20 @@ if (!uri) {
     throw new Error("env error : db uri is missing");
 }
 
-let isConnected = false; // Track connection status
-
 async function connectionToDatabase(){
 
+    if (mongoose.connections[0].readyState){
+        console.log("Using existing connection.");
+        return;
+    } 
+
     try {
-        if (isConnected) {
-            console.log("⚡ Using existing MongoDB connection");
-            return;
-        }
-       const db = await mongoose.connect(uri!);
+        
+        await mongoose.connect(uri!);
         const connection = mongoose.connection;
 
         connection.on('connected', () => {
             console.log('MongoDB connected successfully');
-            isConnected = !!db.connections[0].readyState;
         })
 
         connection.on('error', (err) => {
@@ -31,6 +31,7 @@ async function connectionToDatabase(){
     } catch (error) {
         console.log('Something went wrong!');
         console.log(error);
+        process.exit(1);
         
     }
 }

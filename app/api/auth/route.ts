@@ -2,6 +2,7 @@
 
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
+import { User } from "@/models/user.model"; // Ensure User model is imported
 import jwt from "jsonwebtoken"; // If using JWT
 
 export async function GET(request: NextRequest) {

@@ -2,6 +2,8 @@
 
 import connectionToDatabase from "@/lib/db";
 import { NextResponse } from "next/server";
+import { User } from "@/models/user.model"; // Ensure User model is imported
+
 
 // logout route
 

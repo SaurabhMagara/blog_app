@@ -13,11 +13,13 @@ export async function GET() {
         await connectionToDatabase();
 
         // getting blogs from db
-        const blogs = await Blog.find()?.populate("postedBy","username");
+        const blogs = await Blog.find()
+            .populate("postedBy", "username")
+            .sort({ createdAt: -1 });
 
         // if blogs array is empty give empty array
-        if (!blogs || blogs.length <= 0 ) {
-            return NextResponse.json({ message: "No blogs yet." , data : []}, { status: 200 });
+        if (!blogs || blogs.length <= 0) {
+            return NextResponse.json({ message: "No blogs yet.", data: [] }, { status: 200 });
         }
 
         // if there is blogs return response

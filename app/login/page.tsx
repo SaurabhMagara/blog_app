@@ -89,7 +89,7 @@ const LoginPage = () => {
   );
 
   useEffect(() => {
-    console.log(user);
+    // console.log(user);
     if (!user) {
       return;
     }

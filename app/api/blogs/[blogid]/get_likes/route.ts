@@ -3,6 +3,7 @@ import { Blog } from "@/models/blog.model";
 import { Like } from "@/models/likes.model";
 import { isValidObjectId } from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
+import { User } from "@/models/user.model"; // Ensure User model is imported
 
 export async function GET(
   req: NextRequest,

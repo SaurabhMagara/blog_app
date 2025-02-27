@@ -83,6 +83,7 @@ const SignupPage = () => {
       toast.success("Register successful!");
       router.push("/login");
     } catch (err: any) {
+      console.log(err);
       setEmail("");
       setPassword("");
       setUserName("");

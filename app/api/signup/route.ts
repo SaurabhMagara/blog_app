@@ -36,36 +36,44 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ [ke
         const genSalt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, genSalt);
 
-        const buffer = Buffer.from(await file.arrayBuffer());
-        const stream = Readable.from(buffer);
+        let buffer;
+        let stream: Readable;
+        let uploadPromise;
+        let uploadedImage;
 
-        const uploadPromise = new Promise<{ url: string; public_id: string }>((resolve, reject) => {
-            const cloudinaryUpload = cloudinary.uploader.upload_stream(
-                { folder: "nextjs_uploads" },
-                (error, result) => {
-                    if (error || !result) return reject(error);
-                    resolve({ url: result.secure_url, public_id: result.public_id });
-                }
-            );
-            stream.pipe(cloudinaryUpload);
-        });
+        if (file) {
+            buffer = Buffer.from(await file.arrayBuffer());
+            stream = Readable.from(buffer);
 
-        const uploadedImage = await uploadPromise;
-
-        if (!uploadedImage) {
-            return new Response(JSON.stringify({ message: "Upload failed" }), {
-                status: 500,
-                headers: { "Content-Type": "application/json" },
+            uploadPromise = new Promise<{ url: string; public_id: string }>((resolve, reject) => {
+                const cloudinaryUpload = cloudinary.uploader.upload_stream(
+                    { folder: "nextjs_uploads" },
+                    (error, result) => {
+                        if (error || !result) return reject(error);
+                        resolve({ url: result.secure_url, public_id: result.public_id });
+                    }
+                );
+                stream.pipe(cloudinaryUpload);
             });
-        }
 
+            uploadedImage = await uploadPromise;
+
+            if (!uploadedImage) {
+                return new Response(JSON.stringify({ message: "Upload failed" }), {
+                    status: 500,
+                    headers: { "Content-Type": "application/json" },
+                });
+            }
+
+        }
+        
         const user = new User({
             username,
             email,
             password: hashedPassword,
             profile_pic: {
-                url: uploadedImage.url,
-                public_id: uploadedImage.public_id
+                url: uploadedImage?.url,
+                public_id: uploadedImage?.public_id
             }
         });
 

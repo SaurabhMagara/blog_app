@@ -17,7 +17,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`antialiased overflow-x-hidden`}>
-        <Toaster position="top-right" />
+        <Toaster position="bottom-right" />
         <UserContextProvider>{children}</UserContextProvider>
       </body>
     </html>

@@ -100,13 +100,19 @@ const Navbar = () => {
                 aria-expanded={isDropdownOpen}
                 aria-haspopup="true"
               >
-                <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-violet-300">
-                  <img
-                    src={userDetails?.profile_pic.url}
-                    alt="Profile"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
+                {userDetails?.profile_pic ? (
+                  <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-violet-300">
+                    <img
+                      src={userDetails?.profile_pic.url}
+                      alt="Profile"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                ) : (
+                  <div className="w-10 h-10 bg-violet-400 rounded-full overflow-hidden border-2 border-violet-300 flex justify-center items-center">
+                    <span className="text-xl">{userDetails?.username?.charAt(0)?.toUpperCase()}</span>
+                  </div>
+                )}
                 <svg
                   className={`ml-1 h-5 w-5 transition-transform ${
                     isDropdownOpen ? "transform rotate-180" : ""

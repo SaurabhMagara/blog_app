@@ -23,7 +23,12 @@ interface Like {
 }
 
 // for formating createdAt time stamps
-const formatTimestamp = (timestamp: string) => {
+const formatTimestamp = (timestamp: string | undefined) => {
+
+  if(!timestamp){
+    return;
+  }
+
   const date = new Date(timestamp);
 
   // Check if the date is valid
@@ -182,14 +187,6 @@ export default function BlogPage() {
     );
   }
 
-  // if there is no blog then show no blog
-  if (!blog) {
-    return (
-      <div className="flex justify-center items-center min-h-screen bg-gradient-to-b from-violet-200 to-indigo-100">
-        Blog not found
-      </div>
-    );
-  }
 
   return (
     <>
@@ -200,15 +197,15 @@ export default function BlogPage() {
             <div className="border-b border-violet-500 flex gap-3 mb-4 pb-4">
               <button
                 onClick={() => router.push("/blogs")}
-                className="md:rounded-full md:bg-violet-700 md:py-1 md:px-2"
+                className=""
               >
-                <MoveLeft className="text-gray-100 rounded-full md:rounded-none bg-violet-700 p-1 md:p-0" />
+                <MoveLeft className="text-gray-100 rounded-full  bg-violet-700 p-1" />
               </button>
               <div>
                 <h1 className="text-3xl font-bold  text-violet-700">
                   {blog?.title}
                 </h1>
-                <span className="text-violet-500"> Author : {blog.postedBy?.username}</span>
+                <span className="text-violet-500"> Author : {blog?.postedBy?.username}</span>
               </div>
             </div>
             <div className="text-violet-500 mb-4 flex justify-between items-center">
@@ -224,11 +221,11 @@ export default function BlogPage() {
             </div>
           </div>
 
-          <div className="relative w-full mb-8">
+          <div className="relative w-full mb-8 flex justify-center items-center">
             <img
-              src={blog?.image.url || ""}
+              src={blog?.image.url}
               alt={blog?.title || "image"}
-              className="object-cover rounded-lg"
+              className="object-cover rounded-lg max-h-[500px]"
             />
           </div>
 
