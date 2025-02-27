@@ -4,37 +4,34 @@ import { Like } from "@/models/likes.model";
 import { isValidObjectId } from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
-// -------------- get blogs likes--------------------
-interface ContextType {
-    params: { blogid: string };
-}
+export async function GET(
+  req: NextRequest,
+  { params }: { params: Promise<{ blogid: string }> }
+) {
+  try {
+    await connectionToDatabase();
 
-export async function GET(req: NextRequest, context: ContextType ) {
-    try {
-        await connectionToDatabase();
+    const { blogid } = await params;
 
-        const {blogid} = context.params;
-
-        if(!blogid || !isValidObjectId(blogid)){
-            return NextResponse.json({message : "Invalid blogid."},{status:400});
-        }
-
-        const existingBlog = await Blog.findById(blogid);
-
-        if(!existingBlog){
-            return NextResponse.json({message : "No blog with given id."}, {status : 400});
-        }
-
-        const Likes = await Like.find({blogid});
-
-        if(!Likes || Likes?.length <=0){
-            return NextResponse.json({message : "There no likes.", data : []}, {status : 200});
-        }
-
-        return NextResponse.json({message : "Likes recieved successfully.", data : Likes},{status : 200});
-
-    } catch (error : any) {
-        console.log(error);
-        return NextResponse.json({message : error?.message || "Something went wrong", error},{status : 500});
+    if (!blogid || !isValidObjectId(blogid)) {
+      return NextResponse.json({ message: "Invalid blogid." }, { status: 400 });
     }
+
+    const existingBlog = await Blog.findById(blogid);
+
+    if (!existingBlog) {
+      return NextResponse.json({ message: "No blog with given id." }, { status: 400 });
+    }
+
+    const likes = await Like.find({ blogid });
+
+    if (!likes || likes.length === 0) {
+      return NextResponse.json({ message: "There are no likes.", data: [] }, { status: 200 });
+    }
+
+    return NextResponse.json({ message: "Likes received successfully.", data: likes }, { status: 200 });
+  } catch (error: any) {
+    console.error(error);
+    return NextResponse.json({ message: error.message || "Something went wrong", error }, { status: 500 });
+  }
 }

@@ -1,29 +1,25 @@
-"use server"
-
 import connectionToDatabase from "@/lib/db";
 import { User } from "@/models/user.model";
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import bcrypt from "bcrypt";
 import { Readable } from "stream";
 import cloudinary from "@/lib/cloudinary";
 
-
-// rehister user route or signup route
-
-export async function POST(req: NextRequest, res: NextResponse) {
+export async function POST(req: NextRequest, { params }: { params: Promise<{ [key: string]: string }> }) {
     try {
         await connectionToDatabase();
 
-        // const {email, password, username} = await req.json();
         const formData = await req.formData();
-
         const email = formData.get("email") as string;
         const username = formData.get("username") as string;
         const password = formData.get("password") as string;
         const file = formData.get("image") as File;
 
         if (!email || !password || !username) {
-            return NextResponse.json({ message: "All fields are required." }, { status: 401 });
+            return new Response(JSON.stringify({ message: "All fields are required." }), {
+                status: 400,
+                headers: { "Content-Type": "application/json" },
+            });
         }
 
         const existingUser = await User.findOne({
@@ -31,23 +27,24 @@ export async function POST(req: NextRequest, res: NextResponse) {
         });
 
         if (existingUser) {
-            return NextResponse.json({ message: "Email or username already in use!" }, { status: 401 });
+            return new Response(JSON.stringify({ message: "Email or username already in use!" }), {
+                status: 409,
+                headers: { "Content-Type": "application/json" },
+            });
         }
 
         const genSalt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, genSalt);
 
-        // getting file 
         const buffer = Buffer.from(await file.arrayBuffer());
         const stream = Readable.from(buffer);
 
-        // uploading profile pic in cloudinary
         const uploadPromise = new Promise<{ url: string; public_id: string }>((resolve, reject) => {
             const cloudinaryUpload = cloudinary.uploader.upload_stream(
                 { folder: "nextjs_uploads" },
                 (error, result) => {
                     if (error || !result) return reject(error);
-                    resolve({ url: result.secure_url, public_id: result.public_id }); // Get both URL & public_id
+                    resolve({ url: result.secure_url, public_id: result.public_id });
                 }
             );
             stream.pipe(cloudinaryUpload);
@@ -56,10 +53,12 @@ export async function POST(req: NextRequest, res: NextResponse) {
         const uploadedImage = await uploadPromise;
 
         if (!uploadedImage) {
-            return NextResponse.json({ message: "Upload failed" }, { status: 500 });
+            return new Response(JSON.stringify({ message: "Upload failed" }), {
+                status: 500,
+                headers: { "Content-Type": "application/json" },
+            });
         }
 
-        // Now save the user with the correct profile_pic structure
         const user = new User({
             username,
             email,
@@ -72,10 +71,16 @@ export async function POST(req: NextRequest, res: NextResponse) {
 
         const newUser = await user.save();
 
-        return NextResponse.json({ message: "Registered Successfully", data: newUser }, { status: 201 });
+        return new Response(JSON.stringify({ message: "Registered Successfully", data: newUser }), {
+            status: 201,
+            headers: { "Content-Type": "application/json" },
+        });
 
     } catch (error: any) {
-        console.log(error);
-        return NextResponse.json({ error: error.message || "Something went wrong." }, { status: 500 });
+        console.error(error);
+        return new Response(JSON.stringify({ error: error.message || "Something went wrong." }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" },
+        });
     }
 }
