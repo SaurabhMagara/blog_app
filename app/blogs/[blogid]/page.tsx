@@ -103,18 +103,16 @@ export default function BlogPage() {
 
   // getting blogs and likes in useEffect
   useEffect(() => {
-    if (!blogid) return;
+    if (!blogid || !user) return;
 
     // getting likes
     const fetchBlog = async () => {
       try {
         const response = await axios.get(`/api/blogs/${blogid}`);
-        // console.log(response);
+        console.log(response);
         setBlog(response.data.data);
 
-        if(user?._id === response.data.data.postedBy){
-          setCreatedByUser(true);
-        }
+        setCreatedByUser(user._id === response.data.data.postedBy._id)
       } catch (error: any) {
         console.error("Error fetching blog:", error);
         toast.error(error?.response?.data?.message);
