@@ -206,18 +206,23 @@ export default function BlogPage() {
               >
                 <MoveLeft className="text-gray-100 rounded-full md:rounded-none bg-violet-700 p-1 md:p-0" />
               </button>
-              <h1 className="text-3xl font-bold  text-violet-700">
-                {blog?.title}
-              </h1>
+              <div>
+                <h1 className="text-3xl font-bold  text-violet-700">
+                  {blog?.title}
+                </h1>
+                <span className="text-violet-500"> Author : {blog.postedBy?.username}</span>
+              </div>
             </div>
             <div className="text-violet-500 mb-4 flex justify-between items-center">
               {formatTimestamp(blog?.updatedAt)}
-             {createdByUser && <button
-                onClick={() => handleDeleteBlog(blogid as string)}
-                className="rounded-full bg-red-500 hover:bg-red-600 p-1 md:p-2"
-              >
-                <Trash2 className="text-gray-100 p-1 md:p-0" />
-              </button>}
+              {createdByUser && (
+                <button
+                  onClick={() => handleDeleteBlog(blogid as string)}
+                  className="rounded-full bg-red-500 hover:bg-red-600 p-1 md:p-2"
+                >
+                  <Trash2 className="text-gray-100 p-1 md:p-0" />
+                </button>
+              )}
             </div>
           </div>
 

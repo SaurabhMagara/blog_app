@@ -8,8 +8,8 @@ import { useUserContext } from "@/context/userContext";
 
 interface Comment {
   _id: string;
-  blogId: {_id : string, postedBy : string};
-  userId: {username : string, _id :string}
+  blogId: { _id: string; postedBy: string };
+  userId: { username: string; _id: string; profile_pic: { url: string } };
   content: string;
   createdAt: string;
 }
@@ -30,7 +30,7 @@ const CommentModal: React.FC<CommentModalProps> = ({
   const [loading, setLoading] = useState(true);
   const modalRef = useRef<HTMLDivElement>(null);
   const [isPostingComment, setIsPostingComment] = useState(false);
-  const {user} = useUserContext();
+  const { user } = useUserContext();
 
   // Handle clicking outside to close modal
   useEffect(() => {
@@ -83,7 +83,7 @@ const CommentModal: React.FC<CommentModalProps> = ({
       const response = await axios.get(`/api/blogs/${blogId}/get_comments`);
 
       // console.log(response);
-      setComments(response.data.data)
+      setComments(response.data.data);
     } catch (error: any) {
       console.error("Error fetching comments:", error);
       toast.error(error?.response?.data?.message);
@@ -92,7 +92,6 @@ const CommentModal: React.FC<CommentModalProps> = ({
       setLoading(false);
     }
   };
-
 
   // Submit a new comment
   const handleSubmitComment = async (e: React.FormEvent) => {
@@ -104,19 +103,19 @@ const CommentModal: React.FC<CommentModalProps> = ({
     try {
       // In a real app, you would send this to your API
       const response = await axios.post(`/api/blogs/${blogId}/add_comment`, {
-        userid : user?._id,
-        content : newComment
+        userid: user?._id,
+        content: newComment,
       });
 
       // console.log(response);
       await fetchComments();
       setNewComment("");
       setIsPostingComment(false);
-    } catch (error : any) {
+    } catch (error: any) {
       console.error("Error posting comment:", error);
       toast.error(error?.response?.data?.message);
-    }finally{
-        setIsPostingComment(false);
+    } finally {
+      setIsPostingComment(false);
     }
   };
 
@@ -132,16 +131,18 @@ const CommentModal: React.FC<CommentModalProps> = ({
     });
   };
 
-  const handleDeleteComment= async(id : string)=>{
+  const handleDeleteComment = async (id: string) => {
     try {
-      const response = await axios.delete(`/api/blogs/${blogId}/delete_comment/${id}`);
+      const response = await axios.delete(
+        `/api/blogs/${blogId}/delete_comment/${id}`
+      );
       // console.log(response);
-      await fetchComments()
-    } catch (error : any) {
+      await fetchComments();
+    } catch (error: any) {
       console.log(error);
-      toast.error(error?.response?.data?.message || "Something went wrong.")
+      toast.error(error?.response?.data?.message || "Something went wrong.");
     }
-  }
+  };
 
   if (!isOpen) return null;
 
@@ -179,14 +180,26 @@ const CommentModal: React.FC<CommentModalProps> = ({
                   className="border border-violet-400 rounded-lg p-3"
                 >
                   <div className="flex justify-between items-start mb-2">
-                    <h4 className="font-medium">{comment.userId?.username}</h4>
+                    <div className="flex justify-center items-center gap-2">
+                      <img
+                        className="rounded-full h-8 w-8 object-cover"
+                        src={comment?.userId?.profile_pic?.url}
+                      />
+
+                      <h4 className="font-medium">
+                        {comment.userId?.username}
+                      </h4>
+                    </div>
                     <div className="flex gap-2 justify-center items-center">
                       <span className="text-xs text-gray-500">
                         {formatDate(comment.createdAt)}
                       </span>
                       {comment?.userId?._id === user?._id ||
                       comment?.blogId?.postedBy === user?._id ? (
-                        <button onClick={()=>handleDeleteComment(comment._id)} className="bg-red-400 hover:bg-red-500 cursor-pointer rounded-full text-white ">
+                        <button
+                          onClick={() => handleDeleteComment(comment._id)}
+                          className="bg-red-400 hover:bg-red-500 cursor-pointer rounded-full text-white "
+                        >
                           <Trash2 className="p-1" />
                         </button>
                       ) : null}

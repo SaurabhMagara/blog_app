@@ -215,7 +215,7 @@ const add_blog: React.FC = () => {
   return (
     <>
       <Navbar />
-      <div className="h-full w-full bg-gradient-to-b from-violet-200 to-indigo-100">
+      <div className="h-full min-h-screen w-full bg-gradient-to-b from-violet-200 to-indigo-100">
         <div className="flex flex-col gap-3 w-full h-full rounded-lg overflow-hidden px-4 py-3 md:px-5">
           <div className="flex justify-between w-full border-b-2 border-violet-700 py-4">
             <div className=" flex gap-3 justify-center items-center">

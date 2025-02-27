@@ -19,8 +19,9 @@ export interface Blog {
   };
   comments: number;
   likes: number;
-  createAt: string;
+  createdAt: string;
   updatedAt: string;
+  postedBy : {_id : string, username : string}
 }
 
 const Blogs = () => {
@@ -81,8 +82,8 @@ const Blogs = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 h-full">
               {blogs.map((blog) => (
                 <Link href={`/blogs/${blog._id}`} key={blog._id}>
-                  <div className="bg-gradient-to-l from-violet-50 to-violet-200 rounded-lg overflow-hidden shadow-violet-200 shadow-lg cursor-pointer group  flex flex-col">
-                    <div className="w-full h-48 overflow-hidden ">
+                  <div className="bg-gradient-to-l from-violet-50 to-violet-200 rounded-lg overflow-hidden shadow-violet-200 shadow-lg cursor-pointer group  flex flex-col  h-[377px]">
+                    <div className="w-full h-56 overflow-hidden ">
                       <img
                         src={blog?.image.url}
                         alt={blog.title}
@@ -90,24 +91,29 @@ const Blogs = () => {
                       />
                     </div>
 
-                    <div className="p-6 flex flex-col justify-between">
-                      <h2 className="text-2xl text-violet-700 font-semibold mb-4">
-                        {blog.title}
-                      </h2>
+                    <div className="px-6 pt-2 flex flex-col justify-between">
+                      <div className="pb-2">
+                        <h2 className="text-2xl text-violet-700 font-semibold">
+                          {blog.title}
+                        </h2>
+                        <span className="text-violet-500">
+                          Author : {blog.postedBy.username}
+                        </span>
+                      </div>
                       <p
                         className="line-clamp-3"
                         dangerouslySetInnerHTML={{ __html: blog.content }}
                       />
-                    </div>
-                    <div className="flex items-center justify-end space-x-6 border-t px-5 py-3">
-                      <div className="flex items-center space-x-2 text-red-500 ">
-                        <HeartIcon />
-                        <span>{blog?.likes} likes</span>
-                      </div>
+                      <div className="flex items-center justify-end space-x-6 border-t py-2 px-5">
+                        <div className="flex items-center space-x-2 text-red-500 ">
+                          <HeartIcon />
+                          <span>{blog?.likes} likes</span>
+                        </div>
 
-                      <div className="flex items-center space-x-2 text-blue-500">
-                        <MessageCircleIcon size={20} />
-                        <span>{blog?.comments} comments</span>
+                        <div className="flex items-center space-x-2 text-blue-500">
+                          <MessageCircleIcon size={20} />
+                          <span>{blog?.comments} comments</span>
+                        </div>
                       </div>
                     </div>
                   </div>

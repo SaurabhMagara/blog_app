@@ -30,7 +30,7 @@ export async function GET(
 
     // Finding comments from comments schema
     const comments = await Comment.find({ blogId: blogid })
-      .populate({ path: "userId", select: "username" })  // Get username from userId
+      .populate({ path: "userId", select:"-password" })  // Get username from userId
       .populate({ path: "blogId", select: "postedBy" }); // Get postedBy from blogId
 
     // If there are no comments, returning an empty array
