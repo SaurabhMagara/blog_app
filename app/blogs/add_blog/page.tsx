@@ -8,13 +8,18 @@ import React, {
   FormEvent,
   useEffect,
 } from "react";
-import JoditEditor from "jodit-react";
+import dynamic from 'next/dynamic';
 import axios from "axios";
 import { useUserContext } from "@/context/userContext";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { MoveLeft } from "lucide-react";
 import Navbar from "@/components/Navbar";
+
+const JoditEditor = dynamic(() => import('jodit-react'), {
+  ssr: false,
+  loading: () => <p>Loading editor...</p>
+});
 
 interface BlogPost {
   title: string;
