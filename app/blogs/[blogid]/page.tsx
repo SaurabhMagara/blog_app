@@ -109,7 +109,7 @@ export default function BlogPage() {
     const fetchBlog = async () => {
       try {
         const response = await axios.get(`/api/blogs/${blogid}`);
-        console.log(response);
+        // console.log(response);
         setBlog(response.data.data);
 
         setCreatedByUser(user._id === response.data.data.postedBy._id)
