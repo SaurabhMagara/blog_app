@@ -14,6 +14,7 @@ import toast from "react-hot-toast";
 import CommentModal from "@/components/CommentModal";
 import { Blog } from "../page";
 import Navbar from "@/components/Navbar";
+import { DeleteModal } from "@/components/DeleteModal";
 
 // defining like type
 interface Like {
@@ -60,6 +61,10 @@ export default function BlogPage() {
   const [likedByUser, setLikedByUser] = useState(false); // for checking if user is liked blog or not
   const [isCommentModalOpen, setIsCommentModalOpen] = useState(false); // for handeling comment modal
   const [createdByUser, setCreatedByUser] = useState(false);
+
+  const [blogTitle, setBlogtitle] = useState<string>("");
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
   const router = useRouter();
 
   // method for like and unlike blog
@@ -175,6 +180,8 @@ export default function BlogPage() {
     } catch (error : any) {
       console.log(error);
       toast.error(error?.response?.data?.message || "Delete failed.")
+    }finally{
+      setBlogtitle("");
     }
   }
 
@@ -191,28 +198,36 @@ export default function BlogPage() {
   return (
     <>
       <Navbar />
+      <DeleteModal
+        blogTitle={blog?.title || ""}
+        onClose={() => setIsDeleteModalOpen(false)}
+        isOpen={isDeleteModalOpen}
+        onConfirm={() =>
+          handleDeleteBlog(blogid as string)
+        }
+      />
       <div className="felx bg-gradient-to-b from-violet-200 to-indigo-100 flex justify-center w-full min-h-screen h-full">
         <div className=" px-4 py-8 w-full md:w-9/12 h-full">
           <div className="mb-6">
             <div className="border-b border-violet-500 flex gap-3 mb-4 pb-4">
-              <button
-                onClick={() => router.push("/blogs")}
-                className=""
-              >
+              <button onClick={() => router.push("/blogs")} className="">
                 <MoveLeft className="text-gray-100 rounded-full  bg-violet-700 p-1" />
               </button>
               <div>
                 <h1 className="text-3xl font-bold  text-violet-700">
                   {blog?.title}
                 </h1>
-                <span className="text-violet-500"> Author : {blog?.postedBy?.username}</span>
+                <span className="text-violet-500">
+                  {" "}
+                  Author : {blog?.postedBy?.username}
+                </span>
               </div>
             </div>
             <div className="text-violet-500 mb-4 flex justify-between items-center">
               {formatTimestamp(blog?.updatedAt)}
               {createdByUser && (
                 <button
-                  onClick={() => handleDeleteBlog(blogid as string)}
+                  onClick={() => setIsDeleteModalOpen(true)}
                   className="rounded-full bg-red-500 hover:bg-red-600 p-1 md:p-2"
                 >
                   <Trash2 className="text-gray-100 p-1 md:p-0" />

@@ -154,7 +154,7 @@ const Navbar = () => {
                   </div>
 
                   {/* Menu options */}
-                  <div className="px-2 py-2">
+                  <Link href={"/profile"} className="px-2 py-2">
                     {/* <Link href="/profile"> */}
                     <div className="px-4 py-2 text-sm hover:bg-violet-100 rounded-md cursor-pointer flex items-center">
                       <svg
@@ -213,7 +213,7 @@ const Navbar = () => {
                       </svg>
                       Logout
                     </button>
-                  </div>
+                  </Link>
                 </div>
               )}
             </div>
