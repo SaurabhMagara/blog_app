@@ -130,7 +130,7 @@ const SignupPage = () => {
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-md bg-violet-100 rounded-lg shadow-lg p-8"
+        className="w-11/12 max-w-md bg-violet-100 rounded-lg shadow-lg p-8"
       >
         <h1 className="text-3xl font-bold text-center text-violet-900 mb-6">
           Create Account

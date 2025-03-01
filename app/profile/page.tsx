@@ -14,15 +14,17 @@ import toast from "react-hot-toast";
 import { useUserContext } from "@/context/userContext";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import { log } from "console";
 
 const ProfilePage = () => {
   const { user } = useUserContext();
   const [loading, setLoading] = useState(false);
+  const [passwordLoading, setPasswordLoading] = useState(false);
   const [userData, setUserData] = useState({
     username: "",
     email: "",
     blogCount: 0,
-    profile_pic : ""
+    profile_pic: null,
   });
 
   // Modal states
@@ -31,7 +33,7 @@ const ProfilePage = () => {
   const [form, setForm] = useState({
     username: "",
     email: "",
-    profile_pic: "",
+    profile_pic: null,
   });
 
   // Password visibility states
@@ -61,15 +63,15 @@ const ProfilePage = () => {
     if (
       (!userData.email || userData.email.trim() === "") &&
       (!userData.username || userData.username.trim() === "") &&
-      (!profilePic)
+      !profilePic
     ) {
       toast.error("Please fill field to update. ");
       return;
     }
 
     const fileData = new FormData();
-    fileData.append("username", form?.username);
-    fileData.append("email", form?.email);
+    fileData.append("username", form?.username.trim().toLowerCase());
+    fileData.append("email", form?.email.trim().toLowerCase());
     fileData.append("image", profilePic || "");
 
     try {
@@ -85,10 +87,10 @@ const ProfilePage = () => {
       );
 
       setUserData({
-        username : response?.data?.data?.username,
-        email : response?.data?.data?.email,
-        blogCount : response?.data?.data?.blogs?.length,
-        profile_pic : response?.data?.data?.profile_pic?.url
+        username: response?.data?.data?.username,
+        email: response?.data?.data?.email,
+        blogCount: response?.data?.data?.blogs?.length,
+        profile_pic: response?.data?.data?.profile_pic?.url,
       });
 
       setProfilePic(null);
@@ -97,11 +99,12 @@ const ProfilePage = () => {
     } catch (error: any) {
       console.log(error);
       toast.error(error?.response?.data?.message || "Failed to update.");
-    }finally{
+    } finally {
       setLoading(false);
     }
   };
 
+  // taking profile pic
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
@@ -116,20 +119,42 @@ const ProfilePage = () => {
     }
   };
 
-  const handlePasswordUpdate = (e: FormEvent) => {
+  // for updating password
+  const handlePasswordUpdate = async (e: FormEvent) => {
+    setPasswordLoading(true);
     e.preventDefault();
     if (passwordForm.newPassword !== passwordForm.confirmPassword) {
       setPasswordError("New passwords don't match");
+      setPasswordLoading(false);
+      toast.error("Confirm password dont't match");
       return;
     }
     // In a real app, you would call an API to update the password
-    setShowPasswordModal(false);
-    setPasswordForm({
-      currentPassword: "",
-      newPassword: "",
-      confirmPassword: "",
-    });
-    setPasswordError("");
+
+    try {
+      const response = await axios.post(
+        `/api/users/${user?._id}/update_password`,
+        {
+          currentPassword: passwordForm.currentPassword.trim(),
+          confirmPassword: passwordForm.confirmPassword.trim(),
+        }
+      );
+
+      console.log(response);
+      toast.success(response?.data?.message);
+      setShowPasswordModal(false);
+      setPasswordForm({
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      });
+      setPasswordError("");
+    } catch (error: any) {
+      console.log(error);
+      toast.error(error?.response?.data?.message || "Something went wrong");
+    } finally {
+      setPasswordLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -137,15 +162,25 @@ const ProfilePage = () => {
       return;
     }
 
+    // getting user details
     const getUserDetails = async () => {
       try {
         const response = await axios.get(`/api/users/${user?._id}`);
+        console.log(response);
+
         setUserData({
           blogCount: response?.data?.data?.blogs?.length,
           email: response?.data?.data?.email,
           username: response?.data?.data?.username,
-          profile_pic  :response?.data?.data?.profile_pic?.url
+          profile_pic: response?.data?.data?.profile_pic?.url,
         });
+
+        setForm({
+          username: response?.data?.data?.username,
+          email: response?.data?.data?.email,
+          profile_pic: null,
+        });
+
         setProfilePicPreview(response?.data?.data?.profile_pic?.url);
       } catch (error: any) {
         console.log(error);
@@ -170,12 +205,20 @@ const ProfilePage = () => {
 
         {/* Profile Card */}
         <div className="bg-white rounded-lg shadow-lg p-6 w-full flex flex-col md:flex-row justify-center items-center gap-5">
-          <div className="rounded-full h-56 w-56 overflow-hidden">
-            <img
-              src={userData.profile_pic}
-              className="object-cover h-56 w-56"
-            />
-          </div>
+          {userData?.profile_pic ? (
+            <div className="rounded-full h-56 w-56 overflow-hidden">
+              <img
+                src={userData.profile_pic || undefined}
+                className="object-cover h-56 w-56"
+              />
+            </div>
+          ) : (
+            <div className="rounded-full h-52 w-52 overflow-hidden bg-violet-400 text-gray-100 font-bold flex justify-center items-center">
+              <h1 className="text-[7rem]">
+                {userData.username?.charAt(0)?.toUpperCase()}
+              </h1>
+            </div>
+          )}
           <div className="w-11/12 md:w-auto">
             <h1 className="text-2xl font-bold text-violet-800 mb-6">
               My Profile
@@ -311,10 +354,12 @@ const ProfilePage = () => {
                   />
                 </div>
 
-                <div className="flex justify-end space-x-3">
+                <div className="flex justify-end gap-4 w-full">
                   <button
                     type="button"
-                    className={`${loading && "cursor-not-allowed"}px-4 py-2 text-gray-700 bg-gray-200 rounded hover:bg-gray-300 `}
+                    className={`${
+                      loading && "cursor-not-allowed"
+                    } px-4 py-2 text-gray-700 bg-gray-200 rounded hover:bg-gray-300 `}
                     onClick={() => setShowProfileModal(false)}
                     disabled={loading}
                   >
@@ -322,11 +367,11 @@ const ProfilePage = () => {
                   </button>
                   <button
                     type="submit"
-                    className={`px-4 py-2 text-white ${
+                    className={`px-4 py-2 text-white rounded ${
                       loading
                         ? "bg-violet-400 hover:bg-violet-400 cursor-not-allowed "
-                        : "bg-violet-600 hover:bg-violet-700"
-                    }rounded `}
+                        : "bg-violet-600 hover:bg-violet-800"
+                    } `}
                     disabled={loading}
                   >
                     {loading ? "Updating..." : "Save Changes"}
@@ -365,6 +410,7 @@ const ProfilePage = () => {
                           currentPassword: e.target.value,
                         })
                       }
+                      disabled={passwordLoading}
                       required
                     />
                     <button
@@ -402,6 +448,7 @@ const ProfilePage = () => {
                           newPassword: e.target.value,
                         })
                       }
+                      disabled={passwordLoading}
                       required
                     />
                     <button
@@ -437,6 +484,7 @@ const ProfilePage = () => {
                           confirmPassword: e.target.value,
                         })
                       }
+                      disabled={passwordLoading}
                       required
                     />
                     <button
@@ -475,12 +523,17 @@ const ProfilePage = () => {
                       setShowNewPassword(false);
                       setShowConfirmPassword(false);
                     }}
+                    disabled={passwordLoading}
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-2 text-white bg-violet-600 rounded hover:bg-violet-700"
+                    className={`px-4 py-2 rounded text-white ${
+                      passwordLoading
+                        ? "bg-violet-400 cursor-not-allowed"
+                        : "bg-violet-600 hover:bg-violet-700"
+                    } `}
                   >
                     Update Password
                   </button>

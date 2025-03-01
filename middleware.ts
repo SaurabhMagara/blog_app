@@ -13,7 +13,7 @@ export async function middleware(request: NextRequest) {
         // If no token is found, respond with 401 Unauthorized
         if (!token) {
             return NextResponse.json(
-                { message: "User unauthenticated" },
+                { message: "Unauthorized" },
                 { status: 401 }
             );
         }
@@ -49,5 +49,6 @@ export const config = {
         "/api/logout",
         "/api/users/:userid*",
         "/api/blogs",
+        "/api/blogs/:blogid*"
     ],
 };

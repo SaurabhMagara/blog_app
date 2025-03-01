@@ -3,40 +3,40 @@
 import { FormEvent, useEffect, useState } from "react";
 import { EyeNoneIcon, EyeOpenIcon } from "@radix-ui/react-icons";
 import axios from "axios";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { useUserContext } from "@/context/userContext";
 
 const LoginPage = () => {
-  const { user, setUser } = useUserContext();
+  const { user, setUser, loading } = useUserContext();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loadings, setLoadings] = useState(false);
 
   const router = useRouter();
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    setLoadings(true);
 
     if (!email || !password) {
       toast.error("Please fill in all fields.");
-      setLoading(false);
+      setLoadings(false);
       return;
     }
 
     if (password.length < 4) {
       toast.error("Password must be at least 4 characters long.");
-      setLoading(false);
+      setLoadings(false);
       return;
     }
 
     try {
       const response = await axios.post(
         "/api/",
-        { email, password, username: email },
+        { email : email.trim(), password : password.trim(), username: email.trim() },
         {
           withCredentials: true,
           headers: { "Content-Type": "application/json" },
@@ -53,7 +53,7 @@ const LoginPage = () => {
       setPassword("");
       toast.error(err?.response?.data?.message || "An error occured.");
     } finally {
-      setLoading(false);
+      setLoadings(false);
     }
   };
 
@@ -88,14 +88,14 @@ const LoginPage = () => {
     </div>
   );
 
+  // chekcing if users is already logged in 
   useEffect(() => {
-    // console.log(user);
-    if (!user) {
-      return;
-    }
 
-    // router.push("/blogs");
-  }, []);
+    // checking if not loading is false and user exists then redirects to /blogs
+    if (!loading && user) {
+      router.push("/blogs");
+    }
+  }, [user, loading, router]); //again trigger useEffect whene ever user loading or router gets updated
 
   return (
     <div className="flex flex-col items-center min-h-screen justify-center bg-gradient-to-br from-violet-400 via-violet-500 to-violet-200">
@@ -103,7 +103,7 @@ const LoginPage = () => {
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-md bg-violet-100 rounded-lg shadow-lg p-8"
+        className="w-11/12 max-w-md  bg-violet-100 rounded-lg shadow-lg p-8"
       >
         <h1 className="text-3xl font-bold text-center text-violet-900 mb-6">
           Welcome Back
@@ -120,7 +120,7 @@ const LoginPage = () => {
               type="text"
               id="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value.trim())}
+              onChange={(e) => setEmail(e.target.value)}
               className="mt-2 block w-full px-4 py-2 bg-violet-200 border border-violet-400 rounded-md text-violet-900 focus:outline-none focus:ring-2 focus:ring-violet-500 placeholder-gray-500"
               placeholder="you@example.com"
             />
@@ -152,16 +152,16 @@ const LoginPage = () => {
           </div>
           <motion.button
             type="submit"
-            disabled={loading}
+            disabled={loadings}
             whileTap={{ scale: 0.95 }}
             whileHover={{ scale: 1.05 }}
             className={`w-full py-2 px-4 text-white rounded-lg font-medium transition-all ${
-              loading
+              loadings
                 ? "bg-violet-400 cursor-not-allowed"
                 : "bg-violet-500 hover:bg-violet-600 focus:ring-4 focus:ring-violet-300"
             }`}
           >
-            {loading ? "Logging in..." : "Login"}
+            {loadings ? "Logging in..." : "Login"}
           </motion.button>
         </form>
         <div className="mt-6 text-center">

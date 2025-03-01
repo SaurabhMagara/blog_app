@@ -79,7 +79,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ [ke
 
         const newUser = await user.save();
 
-        return new Response(JSON.stringify({ message: "Registered Successfully", data: newUser }), {
+        return new Response(JSON.stringify({ message: "Registered Successfully", data: {username :newUser.username, email : newUser.email, profile_pic : newUser.profile_pic} }), {
             status: 201,
             headers: { "Content-Type": "application/json" },
         });

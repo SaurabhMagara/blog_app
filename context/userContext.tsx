@@ -36,7 +36,7 @@ export const UserContextProvider = ({ children }: { children: ReactNode }) => {
            username: response.data.data.username,
          });
        } catch (error) {
-         console.error("Error fetching user:", error);
+        //  console.error("Error fetching user:", error);
        } finally {
          setLoading(false); // ✅ Stop loading once request finishes
        }

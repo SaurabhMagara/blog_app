@@ -2,12 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
-import {
-  HeartIcon,
-  MessageCircleIcon,
-  MoveLeft,
-  Trash2,
-} from "lucide-react";
+import { HeartIcon, MessageCircleIcon, MoveLeft, Trash2 } from "lucide-react";
 import axios from "axios";
 import { useUserContext } from "@/context/userContext";
 import toast from "react-hot-toast";
@@ -25,8 +20,7 @@ interface Like {
 
 // for formating createdAt time stamps
 const formatTimestamp = (timestamp: string | undefined) => {
-
-  if(!timestamp){
+  if (!timestamp) {
     return;
   }
 
@@ -54,22 +48,18 @@ export default function BlogPage() {
   // getting user from context
   const { user, loading: userLoading } = useUserContext(); // Ensure loading state exists
 
-  // getting blogid from params
-  const { blogid } = useParams();
+  const { blogid } = useParams(); // getting blogid from params
   const [blog, setBlog] = useState<Blog>(); // for setting details
   const [loading, setLoading] = useState(true); // for loading
   const [likedByUser, setLikedByUser] = useState(false); // for checking if user is liked blog or not
   const [isCommentModalOpen, setIsCommentModalOpen] = useState(false); // for handeling comment modal
-  const [createdByUser, setCreatedByUser] = useState(false);
-
-  const [blogTitle, setBlogtitle] = useState<string>("");
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [createdByUser, setCreatedByUser] = useState(false); // for setting blog is createdBy user or not
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // for delete modal states
 
   const router = useRouter();
 
   // method for like and unlike blog
   const handleLike = async () => {
-    console.log(user?._id);
     // if blog exists then
     if (blog) {
       // if already liked then remove like
@@ -88,7 +78,7 @@ export default function BlogPage() {
           console.log(error);
           toast.error(error?.response?.data?.message);
         }
-      } else if(!likedByUser){
+      } else if (!likedByUser) {
         // if user didnt have liked, then add like
         try {
           const response = await axios.post(`/api/blogs/${blogid}/like_blog`, {
@@ -113,7 +103,14 @@ export default function BlogPage() {
 
   // getting blogs and likes in useEffect
   useEffect(() => {
-    if (!blogid || !user) return;
+    if (!blogid && !user) {
+      return;
+    }
+
+    if (!user && !userLoading) {
+      router.push("/");
+      return;
+    }
 
     // getting likes
     const fetchBlog = async () => {
@@ -122,7 +119,7 @@ export default function BlogPage() {
         // console.log(response);
         setBlog(response.data.data);
 
-        setCreatedByUser(user._id === response.data.data.postedBy._id)
+        setCreatedByUser(user?._id === response.data.data.postedBy._id);
       } catch (error: any) {
         console.error("Error fetching blog:", error);
         toast.error(error?.response?.data?.message);
@@ -137,7 +134,7 @@ export default function BlogPage() {
   useEffect(() => {
     if (!blogid || !user) return;
 
-    if(!user){
+    if (!user) {
       router.push("/login");
     }
     // getting likes
@@ -171,19 +168,19 @@ export default function BlogPage() {
     getLikes();
   }, [blogid, user]);
 
-
-  const handleDeleteBlog = async (id :string)=>{
+  const handleDeleteBlog = async (id: string) => {
     try {
-      const response = await axios.delete(`/api/users/${user?._id}/delete_blog/${id}`,{withCredentials :true});
+      const response = await axios.delete(
+        `/api/users/${user?._id}/delete_blog/${id}`,
+        { withCredentials: true }
+      );
       console.log(response);
       router.push("/blogs");
-    } catch (error : any) {
+    } catch (error: any) {
       console.log(error);
-      toast.error(error?.response?.data?.message || "Delete failed.")
-    }finally{
-      setBlogtitle("");
+      toast.error(error?.response?.data?.message || "Delete failed.");
     }
-  }
+  };
 
   // if loading then shows loading
   if (loading || userLoading) {
@@ -194,7 +191,6 @@ export default function BlogPage() {
     );
   }
 
-
   return (
     <>
       <Navbar />
@@ -202,9 +198,7 @@ export default function BlogPage() {
         blogTitle={blog?.title || ""}
         onClose={() => setIsDeleteModalOpen(false)}
         isOpen={isDeleteModalOpen}
-        onConfirm={() =>
-          handleDeleteBlog(blogid as string)
-        }
+        onConfirm={() => handleDeleteBlog(blogid as string)}
       />
       <div className="felx bg-gradient-to-b from-violet-200 to-indigo-100 flex justify-center w-full min-h-screen h-full">
         <div className=" px-4 py-8 w-full md:w-9/12 h-full">

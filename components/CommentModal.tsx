@@ -181,10 +181,13 @@ const CommentModal: React.FC<CommentModalProps> = ({
                 >
                   <div className="flex justify-between items-start mb-2">
                     <div className="flex justify-center items-center gap-2">
-                      <img
+                      {comment?.userId?.profile_pic ?<img
                         className="rounded-full h-8 w-8 object-cover"
                         src={comment?.userId?.profile_pic?.url}
-                      />
+                      /> : <div className=" rounded-full overflow-hidden flex justify-center items-center">
+                        <h4 className="bg-violet-400 rounded-full w-8 h-8 flex justify-center items-center text-gray-100">{comment?.userId?.username?.charAt(0).toUpperCase()}</h4>
+                      </div>
+                      }
 
                       <h4 className="font-medium">
                         {comment.userId?.username}

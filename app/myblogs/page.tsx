@@ -3,7 +3,7 @@
 import Navbar from "@/components/Navbar";
 import { useUserContext } from "@/context/userContext";
 import axios from "axios";
-import { HeartIcon, MessageCircleIcon, Plus } from "lucide-react";
+import { ArrowBigLeft, ArrowBigRight, HeartIcon, MessageCircleIcon, MoveLeft, Plus } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -21,38 +21,39 @@ export interface Blog {
   likes: number;
   createdAt: string;
   updatedAt: string;
-  postedBy : {_id : string, username : string}
+  postedBy: { _id: string; username: string };
 }
 
-const Blogs = () => {
-  const [loadings, setLoadings] = useState(true);
+const MyBlogs = () => {
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const { user, loading } = useUserContext();
+  const [loadings, setLoadings] = useState(false)
 
   useEffect(() => {
-    // console.log(user)
+    if(!user){
+        return
+    }
 
     if (!user && !loading) {
       router.push("/login");
       return;
     }
 
-    const getAllBlogs = async () => {
-      setLoadings(true);
+    const getBlogsOfUser = async () => {
       try {
-        const response = await axios.get("/api/blogs");
+        setLoadings(true);
+        const response = await axios.get(`/api/users/${user?._id}/get_blogs`);
         // console.log(response);
         setBlogs(response?.data?.data);
       } catch (error: any) {
         console.log(error);
         toast.error(error?.response?.data?.message || "Can not fetch blogs.");
-        router.push("/login");
-      } finally {
+      }finally{
         setLoadings(false);
       }
     };
 
-    getAllBlogs();
+    getBlogsOfUser();
   }, []);
 
   const router = useRouter();
@@ -63,18 +64,15 @@ const Blogs = () => {
   return (
     <>
       <Navbar />
-      <div className=" relative min-h-screen bg-gradient-to-b from-violet-200 to-indigo-100 p-6">
-        <button
-          onClick={() => handleNavigate()}
-          className="fixed bottom-8 right-5 lg:bottom-16 lg:right-20 z-20 rounded-full bg-violet-600 hover:bg-violet-700 p-3 text-white hover:scale-105 transition-all"
-        >
-          <Plus className="" height={25} width={25} />
-        </button>
+      <div className="min-h-screen bg-gradient-to-b from-violet-200 to-indigo-100 p-6">
         <div className="max-w-6xl mx-auto">
-          <div className="flex justify-between items-center mb-4  p-4 border-b-2 border-violet-700">
-            <h1 className="text-4xl text-violet-800 font-bold">Blogs</h1>
+          <div className="flex gap-2 items-center mb-4  p-4 border-b-2 border-violet-700">
+            <Link href={"/blogs"} className="rounded-full hover:bg-violet-700">
+              <MoveLeft className="text-gray-100 p-1 rounded-full bg-violet-600" />
+            </Link>
+            <h1 className="text-4xl text-violet-800 font-bold">My Blogs</h1>
           </div>
-          {blogs?.length <= 0 ? (
+          {blogs?.length < 0 ? (
             <div className="flex justify-center items-center h-[90vh] bg-gradient-to-b from-violet-200 to-indigo-100">
               <div className="w-8 h-8 border-4 border-gray-300 border-t-violet-500 rounded-full animate-spin"></div>
             </div>
@@ -121,10 +119,23 @@ const Blogs = () => {
               ))}
             </div>
           )}
+
+          {blogs.length === 0 && !loadings && (
+            <div className="flex flex-col justify-center items-center h-[50vh] bg-inherit gap-1">
+              <h2 className="text-violet-600 font-semibold"> No blogs Yet</h2>
+              <p className="text-violet-500">Cick below button to first blog</p>
+              <button
+                onClick={handleNavigate}
+                className="bg-violet-600 px-4 py-2 rounded-lg text-gray-100 flex gap-1"
+              >
+                Add blog <ArrowBigRight></ArrowBigRight>
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </>
   );
 };
 
-export default Blogs;
+export default MyBlogs;
