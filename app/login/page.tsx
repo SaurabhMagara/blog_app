@@ -36,7 +36,7 @@ const LoginPage = () => {
     try {
       const response = await axios.post(
         "/api/",
-        { email : email.trim(), password : password.trim(), username: email.trim() },
+        { email : email.trim().toLowerCase(), password : password.trim(), username: email.trim().toLowerCase() },
         {
           withCredentials: true,
           headers: { "Content-Type": "application/json" },
