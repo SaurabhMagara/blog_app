@@ -129,8 +129,6 @@ const ProfilePage = () => {
       toast.error("Confirm password dont't match");
       return;
     }
-    // In a real app, you would call an API to update the password
-
     try {
       const response = await axios.post(
         `/api/users/${user?._id}/update_password`,

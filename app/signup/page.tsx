@@ -108,7 +108,7 @@ const SignupPage = () => {
     delay,
   }) => (
     <div
-      className="absolute"
+      className="absolute hidden sm:block"
       style={{ ...position, width: size, height: size }}
     >
       <motion.div
@@ -249,7 +249,6 @@ const SignupPage = () => {
           </p>
         </div>
       </motion.div>
-      {/* <Toaster position="top-center" /> */}
       {/* Floating Bubbles */}
       <FloatingBubble
         position={{ top: "20%", left: "20%" }}

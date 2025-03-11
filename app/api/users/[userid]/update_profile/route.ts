@@ -82,9 +82,10 @@ export async function POST(req: NextRequest, context: ContextType) {
         //checking if profile exists
         if (profile_pic || profile_pic !== "") {
 
-            // first delete existing image from cloudinary
-            await cloudinary.uploader.destroy(existingUser.profile_pic.public_id);
-
+            // check if image exists or not in existing user if it exists then delete existing pic and replace it with new one
+           if(existingUser?.profile_pic?.public_id){
+               await cloudinary.uploader.destroy(existingUser?.profile_pic?.public_id);
+           }
             const buffer = Buffer.from(await profile_pic?.arrayBuffer());
             const stream = Readable.from(buffer);
 

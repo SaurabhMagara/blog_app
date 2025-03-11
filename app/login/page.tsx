@@ -72,7 +72,7 @@ const LoginPage = () => {
     delay,
   }) => (
     <div
-      className="absolute"
+      className="absolute hidden sm:block"
       style={{ ...position, width: size, height: size }}
     >
       <motion.div
