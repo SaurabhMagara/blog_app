@@ -7,9 +7,6 @@ export async function middleware(request: NextRequest) {
         // Extract the token from cookies
         const token = request.cookies.get("token")?.value;
 
-        // Debugging
-        console.log("Token from cookies:", token);
-
         // If no token is found, respond with 401 Unauthorized
         if (!token) {
             return NextResponse.json(
@@ -21,7 +18,6 @@ export async function middleware(request: NextRequest) {
         // Verify the token
         const secret = new TextEncoder().encode(process.env.JWT_SECRET); // Convert the secret to Uint8Array
         const { payload } = await jwtVerify(token, secret); // Decode and verify the token
-        console.log("Decoded token:", payload);
 
         // If the token is valid, proceed with the request
         return NextResponse.next();

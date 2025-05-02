@@ -3,7 +3,6 @@
 import React, { FormEvent, useEffect, useRef, useState } from "react";
 import {
   User,
-  KeyRound,
   Mail,
   ArrowLeft,
   FileText,
@@ -14,7 +13,6 @@ import toast from "react-hot-toast";
 import { useUserContext } from "@/context/userContext";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { log } from "console";
 
 const ProfilePage = () => {
   const { user } = useUserContext();
