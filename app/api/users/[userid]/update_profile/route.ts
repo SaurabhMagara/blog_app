@@ -6,10 +6,13 @@ import { isValidObjectId } from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 import { uploadImageToCloudinary } from "@/lib/uploadImageToCloudinary";
 
+interface ContextType {
+    params: Promise<{ userid: string }>;
+}
 
-export async function POST(req: NextRequest, { params }: { params: { userid: string } }) {
+export async function POST(req: NextRequest, context : ContextType ) {
     try {
-        const { userid } = params;
+        const { userid } = await context.params;
 
         if (!isValidObjectId(userid)) {
             return NextResponse.json({ message: "Invalid userid." }, { status: 400 });

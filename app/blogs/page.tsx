@@ -97,7 +97,7 @@ const Blogs = () => {
                           {blog.title}
                         </h2>
                         <span className="text-violet-500">
-                          Author : {blog.postedBy.username}
+                          Author : {blog?.postedBy?.username}
                         </span>
                       </div>
                       <p
